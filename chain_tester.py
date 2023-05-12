@@ -15,19 +15,17 @@ load_dotenv()
 
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 
-from chains import qa_chain
-import chain_manager
+from chains.qa_chain import QAChain
+from managers.chain_manager import ChainManager
 
-chain_manager = chain_manager.ChainManager()
+chain_manager = ChainManager()
 
 def main():
-    chain_manager.add_chain(chain_id="1", chain=qa_chain.QAChain)
+    chain_manager.add_chain(chain_id="1", chain=QAChain)
 
     chain_manager.mount_chain(chain_id="1")
 
     print(chain_manager.execute_chain(chain_id="1", inputs=["hello"]))
-
-    print(chain_manager.execute_chain(chain_id="1", inputs=["what was my last input?"]))
 
     print(chain_manager.get_loaded_chains())
 

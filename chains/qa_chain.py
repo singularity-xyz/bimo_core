@@ -8,7 +8,7 @@ from langchain.prompts.chat import (
 
 from langchain import OpenAI
 
-from chains.base_chain import BaseChain
+from .base_chain import BaseChain
 
 class QAChain(BaseChain):
     def __init__(self, llm: ChatOpenAI = OpenAI(temperature=0)):

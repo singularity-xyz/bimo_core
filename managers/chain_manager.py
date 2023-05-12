@@ -27,7 +27,6 @@ class ChainManager:
         if chain_id not in self.chains:
             raise ValueError(f"Chain with ID '{chain_id}' not found.")
         return self.chains[chain_id].run(*inputs)
-        
 
     def remove_chain(self, chain_id: str) -> None:
         pass
