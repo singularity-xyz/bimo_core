@@ -26,5 +26,5 @@ Any additional notes on the module's usage within the broader application.
 """
 
 # Convenience imports
-from llm import LLMChain
-from qa import QAChain
+from .llm import LLMChain
+from .qa import QAChain
