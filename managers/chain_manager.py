@@ -5,7 +5,11 @@ from chains import Chain, LLMChain
 class ChainManager:
     def __init__(self):
         self.default_chains: Dict[str, Chain] = {
-            "llm": LLMChain()
+            "llm": LLMChain(),
+            # "router": RouterChain(),
+            # "sequential": SequentialChain(),
+            # "summary": SummaryChain(),
+            # "transformer": TransformerChain(),
         }
         self.custom_chains: Dict[str, Chain] = {}
 
@@ -30,12 +34,13 @@ class ChainManager:
         else:
             raise ValueError(f"Chain with ID '{chain_id}' not found.")
 
-    def create_custom_chain(self, chain_id: str, chain_class: Type[Chain], *args, **kwargs) -> None:
+    def create_custom_chain(self, chain_id: str, chain_class: Type[Chain], *args, **kwargs) -> Chain:
         """Creates a custom chain with the given chain_id and chain_class."""
         if chain_id in self.default_chains or chain_id in self.custom_chains:
             raise ValueError(f"A chain with ID '{chain_id}' already exists.")
         chain = chain_class(*args, **kwargs)
         self.custom_chains[chain_id] = chain
+        return chain
 
     def delete_custom_chain(self, chain_id: str) -> None:
         """Deletes the custom chain with the given chain_id, if it exists."""
