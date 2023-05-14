@@ -41,10 +41,7 @@ from langchain.chains import LLMChain as LangchainLLMChain
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts.chat import ChatPromptTemplate
 from prompts.human_message import default_human_message_prompt
-from utils import set_openai_api_key
 
-# Set OPENAI_API_KEY environment variable
-set_openai_api_key()
 
 class LLMChain(LangchainLLMChain):
     def __init__(
