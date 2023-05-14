@@ -1,13 +1,18 @@
+import pytest
 from chains import LLMChain
+from utils import logging
 
-def test_llm():
+@pytest.mark.parametrize("message,expected_response", [
+    ("This is a test. Please respond with 'Hello World!'.", "Hello World!"),
+])
+def test_llm(message, expected_response):
     chain = LLMChain()
-    message = "This is a test. Please respond with 'Hello World!'."
     response = chain.run(message)
 
     assert isinstance(response, str)
     assert len(response) > 0
-    assert response == "Hello World!"
+    assert response == expected_response
 
-    print("Message:", message)
-    print("Response:", response)
+    print() # for cleaner output
+    logging.info("Message: %s", message)
+    logging.info("Response: %s", response)

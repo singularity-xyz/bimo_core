@@ -1,6 +1,5 @@
-# OpenAI API key
-from utils import set_openai_api_key
-set_openai_api_key()
+# Utils
+import utils
 
 # Public API
 from .base import Chain
