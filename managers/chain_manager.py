@@ -1,9 +1,10 @@
 from typing import Dict, List, Optional, Type
 from chains import Chain, LLMChain
 
+
 class ChainManager:
     def __init__(self):
-        self.default_chains: Dict[str, LLMChain] = {
+        self.default_chains: Dict[str, Chain] = {
             "llm": LLMChain()
         }
         self.custom_chains: Dict[str, Chain] = {}
@@ -21,7 +22,7 @@ class ChainManager:
        return list(self.default_chains.keys()) + list(self.custom_chains.keys())
 
     def update_chain(self, chain_id: str, chain: Chain) -> None:
-        """Updates the chain with the given chain_id to the given chain."""
+        """Updates the chain with the given chain_id, if it exists."""
         if chain_id in self.default_chains:
             self.default_chains[chain_id] = chain
         elif chain_id in self.custom_chains:
@@ -40,3 +41,5 @@ class ChainManager:
         """Deletes the custom chain with the given chain_id, if it exists."""
         if chain_id in self.custom_chains:
             del self.custom_chains[chain_id]
+        else:
+            raise ValueError(f"Chain with ID '{chain_id}' not found.")
