@@ -12,14 +12,18 @@ class LLMChain(LangchainLLMChain):
     passes the formatted string to LLM, and returns the LLM output.
 
     Args:
-        llm (ChatOpenAI, optional): A ChatOpenAI instance for language model interaction.
-        chat_prompt (ChatPromptTemplate, optional): A ChatPromptTemplate instance for generating prompts.
+        llm (ChatOpenAI, optional):
+            A ChatOpenAI instance for language model interaction.
+        chat_prompt (ChatPromptTemplate, optional):
+            A ChatPromptTemplate instance for generating prompts.
 
     Attributes:
-        llm (ChatOpenAI): The ChatOpenAI instance to use for generating text.
-        prompt (ChatPromptTemplate): The ChatPromptTemplate instance to format with input key values.
+        llm (ChatOpenAI):
+            The ChatOpenAI instance to use for generating text.
+        prompt (ChatPromptTemplate):
+            The ChatPromptTemplate instance to format with input key values.
 
-     Methods:
+    Methods:
         __call__(input: dict) -> dict:
             Formats the prompt using the input and passes it to the LLM.
 
@@ -32,10 +36,10 @@ class LLMChain(LangchainLLMChain):
         generate(input_list: list[dict]) -> LLMResult:
             Similar to apply, but returns an LLMResult instead of a list of strings.
 
-        predict(**kwargs) -> str:
+        predict(\*\*kwargs) -> str:
             Formats the prompt using the kwargs and passes it to the LLM.
 
-        predict_and_parse(**kwargs) -> Any:
+        predict_and_parse(\*\*kwargs) -> Any:
             Similar to predict, but also applies the output parser on the LLM output.
 
         apply_and_parse(input_list: list[dict]) -> list[Any]:
@@ -43,7 +47,6 @@ class LLMChain(LangchainLLMChain):
 
         from_string(llm: OpenAI, template: str) -> LLMChain:
             Constructs an LLMChain from a string template.
-
     """
 
     def __init__(
