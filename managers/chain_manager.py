@@ -17,13 +17,20 @@ class ChainManager:
        """Returns the chain with the given chain_id, or None."""
        return self.default_chains.get(chain_id) or self.custom_chains.get(chain_id)
 
-    def get_all_chains(self) -> Dict[str, Chain]:
-        """Returns a dictionary of all chains, both default and custom."""
-        return {**self.default_chains, **self.custom_chains}
+    def get_all_chains(self, chain_type: str = None) -> Dict[str, Chain]:
+         """Returns a dictionary of all chains, default, or custom."""
+         if chain_type is None:
+              return {**self.default_chains, **self.custom_chains}
+         elif chain_type == "default":
+              return self.default_chains
+         elif chain_type == "custom":
+              return self.custom_chains
+         else:
+              raise ValueError(f"Invalid chain type '{chain_type}'. Must be 'default' or 'custom'.")
 
-    def get_all_chain_ids(self) -> List[str]:
-       """Returns a list of all chain IDs, both default and custom."""
-       return list(self.default_chains.keys()) + list(self.custom_chains.keys())
+    def get_all_chain_ids(self,  chain_type: str = None) -> List[str]:
+        """Returns a list of all chain IDs, default, or custom."""
+        return list(self.get_all_chains(chain_type).keys())
 
     def update_chain(self, chain_id: str, chain: Chain) -> None:
         """Updates the chain with the given chain_id, if it exists."""
