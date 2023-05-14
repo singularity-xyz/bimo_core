@@ -10,7 +10,7 @@ class ChainManager:
         self.custom_chains: Dict[str, Chain] = {}
 
     def get_chain(self, chain_id: str) -> Optional[Chain]:
-       """Returns the chain with the given chain_id, if it exists."""
+       """Returns the chain with the given chain_id, or None."""
        return self.default_chains.get(chain_id) or self.custom_chains.get(chain_id)
 
     def get_all_chains(self) -> Dict[str, Chain]:
