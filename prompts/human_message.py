@@ -1,12 +1,4 @@
+from langchain.prompts import HumanMessagePromptTemplate
 
-
-from langchain.prompts.chat import (
-    HumanMessagePromptTemplate,
-)
-
-from langchain.prompts import PromptTemplate
-
-default = PromptTemplate(
-            template="{human_message}",
-            input_variables=["human_message"],
-        )
+default_human_template = "{human_message}"
+default_human_message_prompt = HumanMessagePromptTemplate.from_template(default_human_template)

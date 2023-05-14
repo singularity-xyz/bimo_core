@@ -39,27 +39,13 @@ Any additional notes on the class's usage within the broader application.
 
 from langchain.chains import LLMChain as LangchainLLMChain
 from langchain.chat_models import ChatOpenAI
-from langchain.prompts import PromptTemplate
-from langchain.prompts.chat import (
-    ChatPromptTemplate,
-    SystemMessagePromptTemplate,
-    AIMessagePromptTemplate,
-    HumanMessagePromptTemplate,
-)
-
-from prompts.human_message import default
+from langchain.prompts.chat import ChatPromptTemplate
+from prompts.human_message import default_human_message_prompt
 
 class LLMChain(LangchainLLMChain):
     def __init__(
         self,
         llm: ChatOpenAI = ChatOpenAI(),
-        chat_prompt: ChatPromptTemplate = None,
+        chat_prompt: ChatPromptTemplate = ChatPromptTemplate.from_messages([default_human_message_prompt])
     ):
-        if chat_prompt is None:
-            human_message_prompt = HumanMessagePromptTemplate(prompt=default)
-
-            chat_prompt = ChatPromptTemplate.from_messages([
-                human_message_prompt
-            ])
-
         super().__init__(llm=llm, prompt=chat_prompt)
