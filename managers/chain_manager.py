@@ -1,73 +1,42 @@
-"""
-Brief summary of the class's purpose.
-
-Detailed explanation of the class's behavior, its role within the larger application, and how it interacts with other classes or data.
-
-Parameters
-----------
-param1 : type
-    Description of param1, including any constraints or required formats.
-param2 : type
-    Description of param2, including any constraints or required formats.
-...
-
-Attributes
-----------
-attr1 : type
-    Description of attr1, including any default values.
-attr2 : type
-    Description of attr2, including any default values.
-...
-
-Methods
--------
-method1
-    Brief description of method1.
-method2
-    Brief description of method2.
-...
-
-Example
--------
->>> ClassName(param1, param2)
-Expected result
-
-Notes
------
-Any additional notes on the class's usage within the broader application.
-"""
-
-import pickle
+from typing import Dict, List, Optional, Type
+from chains import Chain, LLMChain
 
 class ChainManager:
     def __init__(self):
-        # load global chains
-        self.chains = {}
+        self.default_chains: Dict[str, LLMChain] = {
+            "llm": LLMChain()
+        }
+        self.custom_chains: Dict[str, Chain] = {}
 
-    def add_chain(self, chain_id: str, chain: type, chain_parameters: list=[]) -> None:
-        # Initialize chain
-        chain = chain(*chain_parameters)
+    def get_chain(self, chain_id: str) -> Optional[Chain]:
+       """Returns the chain with the given chain_id, if it exists."""
+       return self.default_chains.get(chain_id) or self.custom_chains.get(chain_id)
 
-        self.chains[chain_id] = chain
+    def get_all_chains(self) -> Dict[str, Chain]:
+        """Returns a dictionary of all chains, both default and custom."""
+        return {**self.default_chains, **self.custom_chains}
 
-    def mount_chain(self, chain_id: str):
-        # Load chain object to memory
-        with open(f'{chain_id}.pkl', 'rb') as file:
-            chain = pickle.load(file)
+    def get_all_chain_ids(self) -> List[str]:
+       """Returns a list of all chain IDs, both default and custom."""
+       return list(self.default_chains.keys()) + list(self.custom_chains.keys())
 
-        self.chains[chain_id] = chain
-
-    def unmount_chain(self, chain_id: str):
-        # Remove chain object from memory
-        del self.chains[chain_id]
-
-    def execute_chain(self, chain_id: str, inputs: list=[]):
-        if chain_id not in self.chains:
+    def update_chain(self, chain_id: str, chain: Chain) -> None:
+        """Updates the chain with the given chain_id to the given chain."""
+        if chain_id in self.default_chains:
+            self.default_chains[chain_id] = chain
+        elif chain_id in self.custom_chains:
+            self.custom_chains[chain_id] = chain
+        else:
             raise ValueError(f"Chain with ID '{chain_id}' not found.")
-        return self.chains[chain_id].run(*inputs)
 
-    def remove_chain(self, chain_id: str) -> None:
-        pass
+    def create_custom_chain(self, chain_id: str, chain_class: Type[Chain], *args, **kwargs) -> None:
+        """Creates a custom chain with the given chain_id and chain_class."""
+        if chain_id in self.custom_chains:
+            raise ValueError(f"A custom chain with ID '{chain_id}' already exists.")
+        chain = chain_class(*args, **kwargs)
+        self.custom_chains[chain_id] = chain
 
-    def get_loaded_chains(self):
-        return self.chains.keys()
+    def delete_custom_chain(self, chain_id: str) -> None:
+        """Deletes the custom chain with the given chain_id, if it exists."""
+        if chain_id in self.custom_chains:
+            del self.custom_chains[chain_id]

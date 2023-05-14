@@ -1,6 +1,6 @@
 from chains import LLMChain
 
-def test_llm_chain():
+def test_llm():
     chain = LLMChain()
     message = "This is a test. Please respond with 'Hello World!'."
     response = chain.run(message)

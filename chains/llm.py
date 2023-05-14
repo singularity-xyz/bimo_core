@@ -1,7 +1,6 @@
 from langchain.chains import LLMChain as LangchainLLMChain
 from langchain.chat_models import ChatOpenAI
-from langchain.prompts.chat import ChatPromptTemplate
-from prompts.human_message import default_human_message_prompt
+from prompts import default_human_message_prompt, ChatPromptTemplate
 
 
 class LLMChain(LangchainLLMChain):
@@ -51,7 +50,7 @@ class LLMChain(LangchainLLMChain):
 
     def __init__(
         self,
-        llm: ChatOpenAI = ChatOpenAI(),
+        llm: ChatOpenAI = ChatOpenAI(verbose=True),
         chat_prompt: ChatPromptTemplate = ChatPromptTemplate.from_messages([default_human_message_prompt])
     ):
         super().__init__(llm=llm, prompt=chat_prompt)
