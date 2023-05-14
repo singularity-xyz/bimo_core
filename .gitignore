@@ -2,3 +2,4 @@ data
 config.py
 .env
 __pycache__
+deeplake
