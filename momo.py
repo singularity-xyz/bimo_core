@@ -1,4 +1,5 @@
 import os
+import pickle
 import logging
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import DeepLake
@@ -16,12 +17,12 @@ logging.basicConfig(
 )
 
 # Set up OpenAI API key
-os.environ["OPENAI_API_KEY"] = ""
+os.environ["OPENAI_API_KEY"] = "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"
 # Set up ActiveLoop (DeepLake) API key
 os.environ["DEEPLAKE_API_KEY"] = "xxx"
 
 # Set up PyPDF Loader
-loader = PyPDFLoader("classes/CLAS-151/syllabus.pdf")
+loader = PyPDFLoader("data/CLAS-151/syllabus.pdf")
 
 # Load documents
 logging.info("Loading documents...")
@@ -35,14 +36,19 @@ texts = text_splitter.split_documents(documents)
 # Generate embeddings and create vectorstore
 logging.info("Generating embeddings...")
 embeddings = OpenAIEmbeddings()
-db = DeepLake(dataset_path="deeplake", embedding_function=embeddings)
-db.add_documents(texts)
+# db = DeepLake(dataset_path="deeplake", embedding_function=embeddings)
+# db.add_documents(texts)
+db = DeepLake(dataset_path="deeplake", embedding_function=embeddings, read_only=True)
+
+def filter(x):
+    return True
 
 # Create retrieval chain
 logging.info("Creating retrieval chain...")
-model = ChatOpenAI(model='gpt-3.5-turbo')
+llm = ChatOpenAI()
 retriever = db.as_retriever()
-qa = ConversationalRetrievalChain.from_llm(model, retriever)
+retriever.search_kwargs['filter'] = filter
+qa = ConversationalRetrievalChain.from_llm(llm, retriever, verbose=True)
 
 # Start chat loop
 chat_history = []
@@ -51,6 +57,7 @@ while True:
     if query.lower() == "exit":
         break
     
-    result = qa({"question": query, "chat_history": chat_history})
-    print("Answer:", result["answer"])
+    result = qa({"question": query, "chat_history": chat_history}) 
     chat_history.append((query, result["answer"]))
+    print("Answer:", result["answer"])
+    
