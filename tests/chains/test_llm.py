@@ -9,6 +9,5 @@ def test_llm():
     assert len(response) > 0
     assert response == "Hello World!"
 
-    print()
     print("Message:", message)
     print("Response:", response)

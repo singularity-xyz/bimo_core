@@ -1,10 +1,10 @@
 from langchain.chains import LLMChain as LangchainLLMChain
 from langchain.chat_models import ChatOpenAI
 from prompts import default_human_message_prompt, ChatPromptTemplate
-
+from utils import logging
 
 class LLMChain(LangchainLLMChain):
-    """
+    r"""
     This class extends LangChain's LLMChain for querying an LLM object using a prompt template and input key values.
 
     LLMChain formats the prompt template with the input key values (and memory key values, if available),
@@ -54,3 +54,4 @@ class LLMChain(LangchainLLMChain):
         chat_prompt: ChatPromptTemplate = ChatPromptTemplate.from_messages([default_human_message_prompt])
     ):
         super().__init__(llm=llm, prompt=chat_prompt)
+        logging.info(f"Initialized LLMChain with {self.llm.model_name} and {self.prompt.input_variables}.")

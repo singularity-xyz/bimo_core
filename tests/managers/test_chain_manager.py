@@ -74,6 +74,8 @@ def test_update_chain(chain_manager):
 #     # Test creating a custom chain with an existing ID
 #     with pytest.raises(ValueError):
 #         chain_manager.create_custom_chain("custom", Chain)
+#     with pytest.raises(ValueError):
+#         chain_manager.create_custom_chain("llm", Chain)
 
 # def test_delete_custom_chain(chain_manager):
 #     chain_manager = ChainManager()

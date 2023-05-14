@@ -31,8 +31,8 @@ class ChainManager:
 
     def create_custom_chain(self, chain_id: str, chain_class: Type[Chain], *args, **kwargs) -> None:
         """Creates a custom chain with the given chain_id and chain_class."""
-        if chain_id in self.custom_chains:
-            raise ValueError(f"A custom chain with ID '{chain_id}' already exists.")
+        if chain_id in self.default_chains or chain_id in self.custom_chains:
+            raise ValueError(f"A chain with ID '{chain_id}' already exists.")
         chain = chain_class(*args, **kwargs)
         self.custom_chains[chain_id] = chain
 
