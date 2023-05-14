@@ -7,8 +7,15 @@ from langchain.text_splitter import CharacterTextSplitter, RecursiveCharacterTex
 from langchain.llms import OpenAI
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import ConversationalRetrievalChain
-from langchain.document_loaders import GoogleDriveLoader, PyPDFLoader
+from langchain.document_loaders import GoogleDriveLoader, PyPDFLoader, TextLoader
 from langchain.memory import ConversationBufferMemory
+import pickle
+
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 
 # Set up logging
 logging.basicConfig(
@@ -16,13 +23,9 @@ logging.basicConfig(
     format="[%(levelname)s] [%(name)s] %(message)s",
 )
 
-# Set up OpenAI API key
-os.environ["OPENAI_API_KEY"] = "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"
-# Set up ActiveLoop (DeepLake) API key
-os.environ["DEEPLAKE_API_KEY"] = "xxx"
-
 # Set up PyPDF Loader
-loader = PyPDFLoader("data/CLAS-151/syllabus.pdf")
+#loader = PyPDFLoader("classes/CLAS-151/syllabus.pdf")
+loader = TextLoader("./doc.txt")
 
 # Load documents
 logging.info("Loading documents...")
@@ -45,10 +48,13 @@ def filter(x):
 
 # Create retrieval chain
 logging.info("Creating retrieval chain...")
-llm = ChatOpenAI()
+model = ChatOpenAI()
 retriever = db.as_retriever()
 retriever.search_kwargs['filter'] = filter
 qa = ConversationalRetrievalChain.from_llm(llm, retriever, verbose=True)
+
+with open('test.pkl',  "wb") as file:
+    pickle.dump(qa, file)
 
 # Start chat loop
 chat_history = []

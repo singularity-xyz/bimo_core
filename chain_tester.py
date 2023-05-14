@@ -15,17 +15,28 @@ load_dotenv()
 
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 
-from chains.qa_chain import QAChain
-from managers.chain_manager import ChainManager
+from chains import LLMChain
+from chains.qa import QAChain
+from managers import ChainManager
 
-chain_manager = ChainManager()
+from langchain.document_loaders import TextLoader
+from langchain.vectorstores import Chroma
+loader = TextLoader("./doc.txt")
+documents = loader.load()
+text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+texts = text_splitter.split_documents(documents)
+
+embeddings = OpenAIEmbeddings()
+docsearch = Chroma.from_documents(texts, embeddings)
 
 def main():
-    chain_manager.add_chain(chain_id="1", chain=QAChain)
+    chain_manager = ChainManager()
 
-    chain_manager.mount_chain(chain_id="1")
+    chain_manager.add_chain(chain_id="1", chain=LLMChain)
 
-    print(chain_manager.execute_chain(chain_id="1", inputs=["hello"]))
+    # chain_manager.mount_chain(chain_id="1")
+
+    print(chain_manager.execute_chain(chain_id="1", inputs=['what is 2+2?']))
 
     print(chain_manager.get_loaded_chains())
 

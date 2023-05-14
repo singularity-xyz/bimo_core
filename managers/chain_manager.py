@@ -1,3 +1,42 @@
+"""
+Brief summary of the class's purpose.
+
+Detailed explanation of the class's behavior, its role within the larger application, and how it interacts with other classes or data.
+
+Parameters
+----------
+param1 : type
+    Description of param1, including any constraints or required formats.
+param2 : type
+    Description of param2, including any constraints or required formats.
+...
+
+Attributes
+----------
+attr1 : type
+    Description of attr1, including any default values.
+attr2 : type
+    Description of attr2, including any default values.
+...
+
+Methods
+-------
+method1
+    Brief description of method1.
+method2
+    Brief description of method2.
+...
+
+Example
+-------
+>>> ClassName(param1, param2)
+Expected result
+
+Notes
+-----
+Any additional notes on the class's usage within the broader application.
+"""
+
 import pickle
 
 class ChainManager:
@@ -9,8 +48,7 @@ class ChainManager:
         # Initialize chain
         chain = chain(*chain_parameters)
 
-        # Save chain to file
-        chain.save(f'{chain_id}.pkl')
+        self.chains[chain_id] = chain
 
     def mount_chain(self, chain_id: str):
         # Load chain object to memory
@@ -33,35 +71,3 @@ class ChainManager:
 
     def get_loaded_chains(self):
         return self.chains.keys()
-
-
-# class UserChainManager:
-#     def __init__(self):
-#         self.user_chains = {}
-
-#     def add_chain(self, user_id: str, chain_id: str, chain: Chain) -> None:
-#         if user_id not in self.user_chains:
-#             self.user_chains[user_id] = {}
-        
-#         if chain_id in self.user_chains[user_id]:
-#             raise ValueError(f"Chain with ID '{chain_id}' already exists for user '{user_id}'.")
-        
-#         self.user_chains[user_id][chain_id] = chain
-
-#     def remove_chain(self, user_id: str, chain_id: str) -> None:
-#         if user_id not in self.user_chains or chain_id not in self.user_chains[user_id]:
-#             raise ValueError(f"Chain with ID '{chain_id}' not found for user '{user_id}'.")
-        
-#         del self.user_chains[user_id][chain_id]
-
-#     def execute_chain(self, user_id: str, chain_id: str, inputs: Dict[str, Any]) -> Dict[str, Any]:
-#         if user_id not in self.user_chains or chain_id not in self.user_chains[user_id]:
-#             raise ValueError(f"Chain with ID '{chain_id}' not found for user '{user_id}'.")
-        
-#         return self.user_chains[user_id][chain_id].run(inputs)
-
-#     def load_user_chains(self, user_id: str) -> None:
-#         # Load user-specific chains from disk or database
-
-#     def save_user_chains(self, user_id: str) -> None:
-#         # Save user-specific chains to disk or database
