@@ -24,8 +24,8 @@ class QAChain(ConversationalRetrievalChain):
             A BaseRetriever instance for retrieving documents.
         combine_docs_chain (BaseChain):
             A BaseChain instance for combining documents.
-        llm (ChatOpenAI, optional):
-            A ChatOpenAI instance for language model interaction.
+        llm (BaseLanguageModel, optional):
+            A BaseLanguageModel instance for language model interaction.
         condense_question_prompt (BasePromptTemplate, optional):
             A BasePromptTemplate instance for generating prompts.
         chain_type (str, optional):

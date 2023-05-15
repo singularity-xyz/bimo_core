@@ -19,7 +19,7 @@ class ChainManager:
        return self.default_chains.get(chain_id) or self.custom_chains.get(chain_id)
 
     def get_all_chains(self, chain_type: str = None) -> Dict[str, Chain]:
-         """Returns a dictionary of chains: all. default, or custom."""
+         """Returns a dictionary of chains: all, default, or custom."""
          if chain_type is None:
               return {**self.default_chains, **self.custom_chains}
          elif chain_type == "default":
@@ -27,7 +27,7 @@ class ChainManager:
          elif chain_type == "custom":
               return self.custom_chains
          else:
-              raise ValueError(f"Invalid chain type '{chain_type}'. Must be 'default' or 'custom' or None.")
+              raise ValueError(f"Invalid chain type '{chain_type}'. Must be 'default' or 'custom'.")
 
     def get_all_chain_ids(self,  chain_type: str=None) -> List[str]:
         """Returns a list of chain IDs: all, default, or custom."""
