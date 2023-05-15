@@ -3,6 +3,7 @@ from langchain.document_loaders import TextLoader
 from langchain.vectorstores import Chroma
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
+from utils import logging
 
 
 def test_qa():
@@ -22,6 +23,6 @@ def test_qa():
     assert len(response) > 0
     assert "Elara" in response
 
-    print()
-    print("Message:", message)
-    print("Response:", response)
+    print() # for cleaner output
+    logging.info("Message: %s", message)
+    logging.info("Response: %s", response)

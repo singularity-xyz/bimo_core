@@ -45,6 +45,7 @@ class QAChain(ConversationalRetrievalChain):
         question_generator (BaseChain):
             The BaseChain instance to use for generating questions.
     """
+    
     def __init__(
         self, # I used what you had and reformated the init to match the from_llm() function inside ConversationalRetrievalChain
         retriever: BaseRetriever, # not really sure if we should be using Base classes or not as the type...
