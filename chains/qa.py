@@ -1,43 +1,70 @@
-"""
+from .llm import LLMChain
+from utils import logging
+from typing import Any, Dict, Optional
+from langchain.schema import BaseRetriever
+from langchain.chat_models import ChatOpenAI
+from langchain.base_language import BaseLanguageModel
+from langchain.prompts.base import BasePromptTemplate
+from langchain.chains import ConversationalRetrievalChain
+from langchain.chains.qa_with_sources.loading import load_qa_with_sources_chain
+from langchain.chains.conversational_retrieval.prompts import CONDENSE_QUESTION_PROMPT
+
+
+class QAChain(ConversationalRetrievalChain):
+    """
     This class extends LangChain's ConversationalRetrievalChain for question/answering over a document.
 
     Con formats the prompt template with the input key values (and memory key values, if available),
     passes the formatted string to LLM, and returns the LLM output.
 
     Args:
+        retriever (BaseRetriever):
+            A BaseRetriever instance for retrieving documents.
+        combine_docs_chain (BaseChain):
+            A BaseChain instance for combining documents.
         llm (ChatOpenAI, optional):
             A ChatOpenAI instance for language model interaction.
-        chat_prompt (ChatPromptTemplate, optional):
-            A ChatPromptTemplate instance for generating prompts.
+        condense_question_prompt (BasePromptTemplate, optional):
+            A BasePromptTemplate instance for generating prompts.
+        chain_type (str, optional):
+            The type of chain to use for combining documents.
+        verbose (bool, optional):
+            Whether to print debug information.
+        combine_docs_chain_kwargs (dict, optional):
+            Keyword arguments to pass to the combine_docs_chain constructor.
+        kwargs (dict, optional):
+            Keyword arguments to pass to the ConversationalRetrievalChain constructor.
 
     Attributes:
-        llm (OpenAI):
-            The OpenAI instance to use for generating text.
-        retriever:
-            The retriever object used to access the document.
-
-    Methods:
-        run(input: dict) -> string:
-            Takes in a question and chat_history and uses those to generate a condensed question to
-            answer over the document. Returns an answer with sources listed. 
-"""
-
-from langchain.chains import ConversationalRetrievalChain
-from langchain.chains.qa_with_sources.loading import load_qa_with_sources_chain
-from langchain import OpenAI
-from .llm import LLMChain
-from langchain.chains.conversational_retrieval.prompts import CONDENSE_QUESTION_PROMPT
-from utils import logging
-
-
-class QAChain(ConversationalRetrievalChain):
+        retriever (BaseRetriever):
+            The BaseRetriever instance to use for retrieving documents.
+        combine_docs_chain (BaseChain):
+            The BaseChain instance to use for combining documents.
+        question_generator (BaseChain):
+            The BaseChain instance to use for generating questions.
+    """
     def __init__(
-        self, 
-        retriever, 
-        llm: OpenAI = OpenAI(verbose=True, temperature=0)
+        self, # I used what you had and reformated the init to match the from_llm() function inside ConversationalRetrievalChain
+        retriever: BaseRetriever, # not really sure if we should be using Base classes or not as the type...
+        llm: BaseLanguageModel = ChatOpenAI(verbose=True), # like alternatively we could just use ChatOpenAI
+        condense_question_prompt: BasePromptTemplate = CONDENSE_QUESTION_PROMPT,
+        chain_type: str = "stuff",
+        verbose: bool = False,
+        combine_docs_chain_kwargs: Optional[Dict] = None,
+        **kwargs: Any,
     ):
-        question_generator = LLMChain(llm=llm, chat_prompt=CONDENSE_QUESTION_PROMPT)
-        combine_docs_chain = load_qa_with_sources_chain(llm, chain_type="map_reduce")
-
-        super().__init__(combine_docs_chain=combine_docs_chain, question_generator=question_generator, retriever=retriever)
-        logging.info(f"Initialized QAChain.")
+        combine_docs_chain_kwargs = combine_docs_chain_kwargs or {}
+        doc_chain = load_qa_with_sources_chain(
+            llm,
+            chain_type=chain_type,
+            verbose=verbose,
+            **combine_docs_chain_kwargs,
+        )
+        condense_question_chain = LLMChain(llm=llm, prompt=condense_question_prompt)
+        super().__init__(
+            retriever=retriever,
+            combine_docs_chain=doc_chain,
+            question_generator=condense_question_chain,
+            **kwargs,
+        )
+        logging.info(f"Initialized QAChain with {self.retriever} and {self.combine_docs_chain} and {self.question_generator}.")

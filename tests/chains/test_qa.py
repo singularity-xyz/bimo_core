@@ -4,8 +4,9 @@ from langchain.vectorstores import Chroma
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
 
-def test_llm_chain():
-    loader = TextLoader("./test_document.txt")
+
+def test_qa():
+    loader = TextLoader("tests/chains/test_document.txt")
     documents = loader.load()
     text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
     texts = text_splitter.split_documents(documents)

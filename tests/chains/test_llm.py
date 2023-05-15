@@ -2,6 +2,7 @@ import pytest
 from chains import LLMChain
 from utils import logging
 
+
 @pytest.mark.parametrize("message,expected_response", [
     ("This is a test. Please respond with 'Hello World!'.", "Hello World!"),
 ])

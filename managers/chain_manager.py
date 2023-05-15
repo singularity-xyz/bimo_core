@@ -28,7 +28,7 @@ class ChainManager:
          else:
               raise ValueError(f"Invalid chain type '{chain_type}'. Must be 'default' or 'custom' or None.")
 
-    def get_all_chain_ids(self,  chain_type: str = None) -> List[str]:
+    def get_all_chain_ids(self,  chain_type: str=None) -> List[str]:
         """Returns a list of chain IDs: all, default, or custom."""
         return list(self.get_all_chains(chain_type).keys())
 
