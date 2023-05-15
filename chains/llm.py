@@ -56,7 +56,8 @@ class LLMChain(LangchainLLMChain):
     def __init__(
         self,
         llm: ChatOpenAI = ChatOpenAI(verbose=True),
-        prompt: ChatPromptTemplate = ChatPromptTemplate.from_messages([default_human_message_prompt])
+        prompt: BasePromptTemplate = ChatPromptTemplate.from_messages([default_human_message_prompt]),
+        verbose: bool = True
     ):
-        super().__init__(llm=llm, prompt=prompt)
+        super().__init__(llm=llm, prompt=prompt, verbose=verbose)
         logging.info(f"Initialized LLMChain with {self.llm.model_name} and {self.prompt.input_variables}.")

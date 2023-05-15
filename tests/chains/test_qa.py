@@ -1,4 +1,4 @@
-from chains import QAChain
+from chains import ConversationalRetrievalChain
 from langchain.document_loaders import TextLoader
 from langchain.vectorstores import Chroma
 from langchain.text_splitter import CharacterTextSplitter
@@ -6,7 +6,7 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from utils import logging
 
 
-def test_qa():
+def test_conversational_retrieval():
     loader = TextLoader("tests/chains/test_document.txt")
     documents = loader.load()
     text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
@@ -15,7 +15,7 @@ def test_qa():
     embeddings = OpenAIEmbeddings()
     docsearch = Chroma.from_documents(texts, embeddings)
 
-    chain = QAChain(retriever=docsearch.as_retriever())
+    chain = ConversationalRetrievalChain(retriever=docsearch.as_retriever(), verbose=True)
     message = "What is the name of the main character in the story? Please respond with only the name."
     response = chain.run({"question": message, "chat_history": []})
 
