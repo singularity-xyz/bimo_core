@@ -10,6 +10,8 @@ from langchain.chains.qa_with_sources.loading import load_qa_with_sources_chain
 from langchain.chains.conversational_retrieval.prompts import CONDENSE_QUESTION_PROMPT
 
 
+# I think for naming consistency, this should be called ConversationRetrievalChain not QAChain,
+# unless we want to start deviating from the LangChain class names that we have been using.
 class QAChain(ConversationalRetrievalChain):
     """
     This class extends LangChain's ConversationalRetrievalChain for question/answering over a document.
