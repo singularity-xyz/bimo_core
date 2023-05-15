@@ -1,11 +1,4 @@
-from langchain.chains import LLMChain as LangchainLLMChain
-from langchain.chat_models import ChatOpenAI
-from prompts import default_human_message_prompt, ChatPromptTemplate
-from utils import logging
-
-
-class LLMChain(LangchainLLMChain):
-    r"""
+"""
     This class extends LangChain's LLMChain for querying an LLM object using a prompt template and input key values.
 
     LLMChain formats the prompt template with the input key values (and memory key values, if available),
@@ -47,8 +40,16 @@ class LLMChain(LangchainLLMChain):
 
         from_string(llm: OpenAI, template: str) -> LLMChain:
             Constructs an LLMChain from a string template.
-    """
+"""
 
+from langchain.chains import LLMChain as LangchainLLMChain
+from langchain.chat_models import ChatOpenAI
+from langchain.prompts.chat import ChatPromptTemplate
+from prompts.human_message import default_human_message_prompt
+from utils import logging
+
+
+class LLMChain(LangchainLLMChain):
     def __init__(
         self,
         llm: ChatOpenAI = ChatOpenAI(verbose=True),

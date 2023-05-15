@@ -1,26 +1,39 @@
-from langchain.chains import RetrievalQA, combine_documents
+"""
+    This class extends LangChain's ConversationalRetrievalChain for question/answering over a document.
+
+    Con formats the prompt template with the input key values (and memory key values, if available),
+    passes the formatted string to LLM, and returns the LLM output.
+
+    Args:
+        llm (ChatOpenAI, optional):
+            A ChatOpenAI instance for language model interaction.
+        chat_prompt (ChatPromptTemplate, optional):
+            A ChatPromptTemplate instance for generating prompts.
+
+    Attributes:
+        llm (OpenAI):
+            The OpenAI instance to use for generating text.
+        retriever:
+            The retriever object used to access the document.
+
+    Methods:
+        run(input: dict) -> string:
+            Takes in a question and chat_history and uses those to generate a condensed question to
+            answer over the document. Returns an answer with sources listed. 
+"""
+
+from langchain.chains import ConversationalRetrievalChain
 from langchain.chains.qa_with_sources.loading import load_qa_with_sources_chain
-from langchain.chat_models import ChatOpenAI
-from langchain.prompts import PromptTemplate, SystemMessagePromptTemplate
-from langchain.prompts.chat import (
-    ChatPromptTemplate,
-    HumanMessagePromptTemplate,
-)
 from langchain import OpenAI
+from .llm import LLMChain
+from langchain.chains.conversational_retrieval.prompts import CONDENSE_QUESTION_PROMPT
 
 
-class QAChain(RetrievalQA):
-    def __init__(self, retriever, llm: ChatOpenAI = OpenAI(temperature=0)):
-        template = "You are a helpful assistant named momo that provides helpful information to people based on the provided document."
-        system_message_prompt = SystemMessagePromptTemplate.from_template(template)
-        human_message_prompt = HumanMessagePromptTemplate(
-            prompt=PromptTemplate(
-                template="{message}",
-                input_variables=["message"],
-            )
-        )
+class QAChain(ConversationalRetrievalChain):
+    def __init__(self, retriever, llm: OpenAI = OpenAI(verbose=True, temperature=0)):
 
-        prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
+        question_generator = LLMChain(llm=llm, chat_prompt=CONDENSE_QUESTION_PROMPT)
 
-        combine_document_chain = load_qa_with_sources_chain(llm, chain_type="stuff")
-        super().__init__(combine_documents_chain=combine_document_chain, retriever=retriever)
+        combine_docs_chain = load_qa_with_sources_chain(llm, chain_type="map_reduce")
+
+        super().__init__(combine_docs_chain=combine_docs_chain, question_generator=question_generator, retriever=retriever)
