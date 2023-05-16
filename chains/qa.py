@@ -33,8 +33,6 @@ class QAChain:
 
     Returns:
         An instance of a BaseCombineDocumentsChain This could be an instance of a BaseCombineDocumentsChain that includes sources or a standard BaseCombineDocumentsChain depending on the `with_sources` argument.
-
-    Example usage:
     """
     def __new__(
         self,
