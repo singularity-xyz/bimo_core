@@ -1,6 +1,6 @@
 import pytest
-from src.chains import LLMChain
-from src.utils import logging
+from momoai_core.src.chains import LLMChain
+from momoai_core.src.utils import logging
 
 
 @pytest.mark.parametrize("message,expected_response", [

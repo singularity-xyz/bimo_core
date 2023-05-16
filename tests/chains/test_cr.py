@@ -1,9 +1,9 @@
-from src.chains import CRChain
+from momoai_core.src.chains import CRChain
+from momoai_core.src.utils import logging
 from langchain.document_loaders import TextLoader
 from langchain.vectorstores import Chroma
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
-from src.utils import logging
 
 
 def test_conversational_retrieval():
