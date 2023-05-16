@@ -1,6 +1,6 @@
 import pytest
-from chains import LLMChain
-from utils import logging
+from src.chains import LLMChain
+from src.utils import logging
 
 
 @pytest.mark.parametrize("message,expected_response", [

@@ -1,4 +1,4 @@
-from chains import QAChain
+from src.chains import QAChain
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Chroma

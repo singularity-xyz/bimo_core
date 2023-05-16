@@ -4,12 +4,12 @@ from langchain.base_language import BaseLanguageModel
 from langchain.prompts.base import BasePromptTemplate
 # from langchain.prompts.chat import ChatPromptTemplate
 # need custom ChatPromptTemplate to resolve _prompt_type error
-from prompts import default_human_message_prompt, ChatPromptTemplate
-from utils import logging
+from src.prompts import default_human_message_prompt, ChatPromptTemplate
+from src.utils import logging
 
 
 class LLMChain(LangchainLLMChain):
-    r"""
+    """
     This class extends LangChain's LLMChain for querying an LLM object using a prompt template and input key values.
 
     LLMChain formats the prompt template with the input key values (and memory key values, if available),
@@ -28,15 +28,11 @@ class LLMChain(LangchainLLMChain):
             The ChatOpenAI instance to use for generating text.
         prompt (ChatPromptTemplate):
             The ChatPromptTemplate instance to format with input key values.
-
-    Methods:
-        run(input: dict) -> dict:
-            Similar to __call__, formats the prompt using the input and passes it to the LLM.
     """
 
     def __init__(
         self,
-        llm: ChatOpenAI = ChatOpenAI(verbose=True),
+        llm: BaseLanguageModel = ChatOpenAI(verbose=True),
         prompt: BasePromptTemplate = ChatPromptTemplate.from_messages([default_human_message_prompt]),
         verbose: bool = False
     ):

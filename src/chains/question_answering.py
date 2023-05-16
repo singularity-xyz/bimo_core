@@ -1,5 +1,5 @@
+from src.utils import logging
 from typing import Any, Optional
-from utils import logging
 from langchain.chains.base import Chain
 from langchain.chat_models import ChatOpenAI
 from langchain.base_language import BaseLanguageModel
@@ -32,8 +32,9 @@ class QAChain:
             Additional keyword arguments to be passed to the `load_qa_with_sources_chain` or `load_qa_chain` functions.
 
     Returns:
-        An instance of a BaseCombineDocumentsChain This could be an instance of a BaseCombineDocumentsChain that includes sources or a standard BaseCombineDocumentsChain depending on the `with_sources` argument.
+        An instance of a BaseCombineDocumentsChain.
     """
+
     def __new__(
         self,
         llm: BaseLanguageModel = ChatOpenAI(verbose=True),
@@ -44,13 +45,15 @@ class QAChain:
         **kwargs: Any,
     ):
         if with_sources:
-            return load_qa_with_sources_chain(
+            logging.info(f"Initalizing QAChain with sources and {chain_type} chain.")
+            return load_qa_with_sources_chain(  
                 llm=llm,
                 chain_type=chain_type,
                 verbose=verbose,
                 **kwargs,
             )
         else:
+            logging.info(f"Initalizing QAChain without sources and {chain_type} chain.")
             return load_qa_chain(
                 llm=llm,
                 chain_type=chain_type,

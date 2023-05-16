@@ -1,7 +1,7 @@
 import pytest
-from managers import ChainManager
-from chains import Chain, LLMChain
-from utils import logging
+from src.chains import Chain, LLMChain
+from src.managers import ChainManager
+from src.utils import logging
 
 @pytest.fixture
 def chain_manager():

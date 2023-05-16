@@ -1,9 +1,9 @@
-from chains import ConversationalRetrievalChain
+from src.chains import CRChain
 from langchain.document_loaders import TextLoader
 from langchain.vectorstores import Chroma
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
-from utils import logging
+from src.utils import logging
 
 
 def test_conversational_retrieval():
@@ -15,7 +15,7 @@ def test_conversational_retrieval():
     embeddings = OpenAIEmbeddings()
     docsearch = Chroma.from_documents(texts, embeddings)
 
-    chain = ConversationalRetrievalChain(retriever=docsearch.as_retriever(), verbose=True)
+    chain = CRChain(retriever=docsearch.as_retriever(), verbose=True)
     message = "What is the name of the main character in the story? Please respond with only the name."
     response = chain.run({"question": message, "chat_history": []})
 
