@@ -1,59 +1,39 @@
 """
-Brief summary of the class's purpose.
-
-Detailed explanation of the class's behavior, its role within the larger application, and how it interacts with other classes or data.
-
-Parameters
-----------
-param1 : type
-    Description of param1, including any constraints or required formats.
-param2 : type
-    Description of param2, including any constraints or required formats.
-...
-
-Attributes
-----------
-attr1 : type
-    Description of attr1, including any default values.
-attr2 : type
-    Description of attr2, including any default values.
-...
-
-Methods
--------
-method1
-    Brief description of method1.
-method2
-    Brief description of method2.
-...
-
-Example
--------
->>> ClassName(param1, param2)
-Expected result
-
-Notes
------
-Any additional notes on the class's usage within the broader application.
+1. Upload document file to the database
+2. Get document file from the database
+3. Split document file into chunks
+4. Generate embeddings and add to the vectorstore
+6. Generate a retriever from the vectorstore    
 """
 
-import pickle
+from langchain.document_loaders import PyPDFLoader
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.vectorstores import DeepLake
+from langchain.schema import BaseRetriever
+
 
 class DocumentManager:
     def __init__(self):
-        self.documents = {}
+        self.db = None # some mongo db connection instance
+        self.vector_store = DeepLake(dataset_path="deeplake", embedding_function=OpenAIEmbeddings())
 
-    def add_document(self, document_id: str, document) -> None:
+    def upload_document(self, user_id: str, class_id: str, document_id: str) -> None:
+        generate_embeddings(user_id, class_id, document_id)
+
+    def get_document(self, user_id: str, class_id: str, document_id: str) -> None:
         pass
+        
+    def generate_embeddings(self, user_id: str, class_id: str, document_id: str) -> None:
+        file_path = f"./{user_id}/{class_id}/{document_id}"
+        loader = PyPDFLoader(file_path)
+        documents = loader.load_and_split()
+        text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+        texts = text_splitter.split_documents(documents)
+        self.vector_store.add_documents(texts)
 
-    def mount_document(self, document_id):
-        pass
+    def get_db(self) -> DeepLake:
+        return self.vector_store
 
-    def unmount_document(self, document_id):
-        pass
-
-    def remove_document(self, document_id):
-        pass
-
-    def get_loaded_documents(self):
-        return self.documents.keys()
+    def get_retriever(self) -> BaseRetriever:
+        return self.vector_store.as_retriever()
