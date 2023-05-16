@@ -8,60 +8,62 @@ from langchain.base_language import BaseLanguageModel
 from langchain.prompts.base import BasePromptTemplate
 from langchain.chains import ConversationalRetrievalChain as LangchainConversationalRetrievalChain
 from langchain.chains.conversational_retrieval.prompts import CONDENSE_QUESTION_PROMPT
-from langchain.chains.base import Chain
 
 
-# I think for naming consistency, this should be called ConversationRetrievalChain not QAChain,
-# unless we want to start deviating from the LangChain class names that we have been using.
 class ConversationalRetrievalChain(LangchainConversationalRetrievalChain):
     """
-    This class extends LangChain's ConversationalRetrievalChain for question/answering over a document.
-
-    Con formats the prompt template with the input key values (and memory key values, if available),
-    passes the formatted string to LLM, and returns the LLM output.
+    An extension of the `ConversationalRetrievalChain` class from langchain. This class is used to perform question/answering 
+    over documents passed in as a retriever.
 
     Args:
-        retriever (BaseRetriever):
-            A BaseRetriever instance for retrieving documents.
-        combine_docs_chain (BaseChain):
-            A BaseChain instance for combining documents.
-        llm (BaseLanguageModel, optional):
-            A BaseLanguageModel instance for language model interaction.
-        condense_question_prompt (BasePromptTemplate, optional):
-            A BasePromptTemplate instance for generating prompts.
-        chain_type (str, optional):
-            The type of chain to use for combining documents.
-        verbose (bool, optional):
-            Whether to print debug information.
-        combine_docs_chain_kwargs (dict, optional):
-            Keyword arguments to pass to the combine_docs_chain constructor.
-        kwargs (dict, optional):
-            Keyword arguments to pass to the ConversationalRetrievalChain constructor.
+        retriever (BaseRetriever): 
+            An instance of a retriever class used to retrieve relevant documents.
+        llm (BaseLanguageModel, optional): 
+            An instance of a language model. Default is `ChatOpenAI(verbose=True)`.
+        condense_question_prompt (BasePromptTemplate, optional): 
+            An instance of a prompt template. Default is `CONDENSE_QUESTION_PROMPT`.
+        chain_type (str, optional): 
+            Type of the chain. Default is "stuff".
+        verbose (bool, optional): 
+            If True, verbose mode is activated. Default is False.
+        with_sources (bool, optional):  
+            If True, sources will be included in the responses. Default is True.
+        combine_docs_chain_kwargs (Optional[Dict], optional): 
+            Additional keyword arguments to be passed to the `QAChain` instantiation. Default is None.
+        **kwargs (Any, optional): 
+            Additional keyword arguments to be passed to the `load_qa_with_sources_chain` or `load_qa_chain` functions.
 
     Attributes:
-        retriever (BaseRetriever):
-            The BaseRetriever instance to use for retrieving documents.
-        combine_docs_chain (BaseChain):
-            The BaseChain instance to use for combining documents.
-        question_generator (BaseChain):
-            The BaseChain instance to use for generating questions.
+        retriever (BaseRetriever): 
+            The retriever instance used in the chain.
+        combine_docs_chain (QAChain): 
+            The QAChain instance used in the chain.
+        question_generator (LLMChain): 
+            The LLMChain instance used to generate the questions.
+
+    Methods:
+        run(input: dict) -> dict:
+            Similar to __call__, formats the prompt using the input and passes it to the LLM.
     """
-    
+
     def __init__(
-        self, # I used what you had and reformated the init to match the from_llm() function inside ConversationalRetrievalChain
-        retriever: BaseRetriever, # not really sure if we should be using Base classes or not as the type...
-        llm: BaseLanguageModel = ChatOpenAI(verbose=True), # like alternatively we could just use ChatOpenAI
+        self,
+        retriever: BaseRetriever,
+        llm: BaseLanguageModel = ChatOpenAI(verbose=True),
         condense_question_prompt: BasePromptTemplate = CONDENSE_QUESTION_PROMPT,
         chain_type: str = "stuff",
         verbose: bool = False,
+        with_sources: bool = True,
         combine_docs_chain_kwargs: Optional[Dict] = None,
         **kwargs: Any,
     ):
         combine_docs_chain_kwargs = combine_docs_chain_kwargs or {}
+
         doc_chain = QAChain(
-            llm,
+            llm=llm,
             chain_type=chain_type,
             verbose=verbose,
+            with_sources=with_sources,
             **combine_docs_chain_kwargs,
         )
 

@@ -20,6 +20,8 @@ class LLMChain(LangchainLLMChain):
             A ChatOpenAI instance for language model interaction.
         chat_prompt (ChatPromptTemplate, optional):
             A ChatPromptTemplate instance for generating prompts.
+        verbose (Bool, optional):
+            If True, verbose mode is activated. Default is False.
 
     Attributes:
         llm (ChatOpenAI):
@@ -28,36 +30,15 @@ class LLMChain(LangchainLLMChain):
             The ChatPromptTemplate instance to format with input key values.
 
     Methods:
-        __call__(input: dict) -> dict:
-            Formats the prompt using the input and passes it to the LLM.
-
         run(input: dict) -> dict:
             Similar to __call__, formats the prompt using the input and passes it to the LLM.
-
-        apply(input_list: list[dict]) -> list[dict]:
-            Formats the prompt using each dict in input_list and passes them to the LLM.
-
-        generate(input_list: list[dict]) -> LLMResult:
-            Similar to apply, but returns an LLMResult instead of a list of strings.
-
-        predict(\*\*kwargs) -> str:
-            Formats the prompt using the kwargs and passes it to the LLM.
-
-        predict_and_parse(\*\*kwargs) -> Any:
-            Similar to predict, but also applies the output parser on the LLM output.
-
-        apply_and_parse(input_list: list[dict]) -> list[Any]:
-            Similar to apply, but also applies the output parser on each LLM output.
-
-        from_string(llm: OpenAI, template: str) -> LLMChain:
-            Constructs an LLMChain from a string template.
     """
 
     def __init__(
         self,
         llm: ChatOpenAI = ChatOpenAI(verbose=True),
         prompt: BasePromptTemplate = ChatPromptTemplate.from_messages([default_human_message_prompt]),
-        verbose: bool = True
+        verbose: bool = False
     ):
         super().__init__(llm=llm, prompt=prompt, verbose=verbose)
         logging.info(f"Initialized LLMChain with {self.llm.model_name} and {self.prompt.input_variables}.")

@@ -1,4 +1,6 @@
 from typing import Any, Optional
+from utils import logging
+from langchain.chains.base import Chain
 from langchain.chat_models import ChatOpenAI
 from langchain.base_language import BaseLanguageModel
 from langchain.callbacks.base import BaseCallbackManager
@@ -8,39 +10,53 @@ from langchain.chains.qa_with_sources import load_qa_with_sources_chain
 
 
 class QAChain:
-    def __init__(
+    """
+    A factory class that returns an instance of a BaseCombineDocumentsChain. Depending on the `with_sources` argument,
+    this factory class will return either a BaseCombineDocumentsChain that includes sources or doesn't.
+
+    This class does not actually implement the methods of a chain, but rather delegates the creation
+    of a chain to either `load_qa_with_sources_chain` or `load_qa_chain` based on the parameters passed.
+
+    Args:
+        llm (BaseLanguageModel, optional): 
+            An instance of a language model. Default is `ChatOpenAI(verbose=True)`.
+        chain_type (str, optional): 
+            Type of the chain. Default is "stuff".
+        verbose (Optional[bool], optional): 
+            If True, verbose mode is activated. Default is False.
+        with_sources (bool, optional): 
+            If True, sources will be included in the QA chain. Default is True.
+        callback_manager (Optional[BaseCallbackManager], optional): 
+            An instance of a callback manager. Default is None.
+        **kwargs (Any, optional): 
+            Additional keyword arguments to be passed to the `load_qa_with_sources_chain` or `load_qa_chain` functions.
+
+    Returns:
+        An instance of a BaseCombineDocumentsChain This could be an instance of a BaseCombineDocumentsChain that includes sources or a standard BaseCombineDocumentsChain depending on the `with_sources` argument.
+
+    Example usage:
+    """
+    def __new__(
         self,
-        chain_type: str,
         llm: BaseLanguageModel = ChatOpenAI(verbose=True),
-        verbose: Optional[bool] = None,
-        with_sources: bool = False,
+        chain_type: str = "stuff",
+        verbose: Optional[bool] = False,
+        with_sources: bool = True,
         callback_manager: Optional[BaseCallbackManager] = None,
         **kwargs: Any,
     ):
-        self.llm = llm
-        self.chain_type = chain_type
-        self.verbose = verbose
-        self.with_sources = with_sources
-        self.callback_manager = callback_manager
-        self.kwargs = kwargs
-        self.chain = self._load_chain()
-
-    def _load_chain(self):
-        if self.with_sources:
+        if with_sources:
             return load_qa_with_sources_chain(
-                llm=self.llm,
-                chain_type=self.chain_type,
-                verbose=self.verbose,
-                **self.kwargs,
+                llm=llm,
+                chain_type=chain_type,
+                verbose=verbose,
+                **kwargs,
             )
         else:
             return load_qa_chain(
-                llm=self.llm,
-                chain_type=self.chain_type,
-                verbose=self.verbose,
-                callback_manager=self.callback_manager,
-                **self.kwargs,
+                llm=llm,
+                chain_type=chain_type,
+                verbose=verbose,
+                callback_manager=callback_manager,
+                **kwargs,
             )
-
-    def run(self, **kwargs):
-        return self.chain.run(**kwargs)
