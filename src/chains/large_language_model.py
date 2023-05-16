@@ -1,4 +1,4 @@
-from langchain.chains import LLMChain as LangchainLLMChain
+from langchain.chains import LLMChain as LargeLanguageModelChain
 from langchain.chat_models import ChatOpenAI
 from langchain.base_language import BaseLanguageModel
 from langchain.prompts.base import BasePromptTemplate
@@ -8,7 +8,7 @@ from src.prompts import default_human_message_prompt, ChatPromptTemplate
 from src.utils import logging
 
 
-class LLMChain(LangchainLLMChain):
+class LLMChain(LargeLanguageModelChain):
     """
     This class extends LangChain's LLMChain for querying an LLM object using a prompt template and input key values.
 
@@ -37,4 +37,4 @@ class LLMChain(LangchainLLMChain):
         verbose: bool = False
     ):
         super().__init__(llm=llm, prompt=prompt, verbose=verbose)
-        logging.info(f"Initialized LLMChain with {self.llm.model_name} and {self.prompt.input_variables}.")
+        logging.info(f"Initialized LLMChain with model_name={llm.model_name} and input_variables={prompt.input_variables}.")

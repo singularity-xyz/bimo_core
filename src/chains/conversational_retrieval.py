@@ -79,8 +79,4 @@ class CRChain(ConversationalRetrievalChain):
             question_generator=condense_question_chain,
             **kwargs,
         )
-        logging.info(f"Initialized ConversationalRetrievalChain with {self.retriever} and {self.combine_docs_chain} and {self.question_generator}.")
-
-
-
-
+        logging.info(f"Initialized CRChain with retriever={retriever}, combine_docs_chain={doc_chain}, and question_generator={condense_question_chain}.")

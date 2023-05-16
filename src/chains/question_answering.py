@@ -44,8 +44,8 @@ class QAChain:
         callback_manager: Optional[BaseCallbackManager] = None,
         **kwargs: Any,
     ):
+        logging.info(f"Initalizing QAChain with chain_type={chain_type} and with_sources={with_sources}.")
         if with_sources:
-            logging.info(f"Initalizing QAChain with sources and {chain_type} chain.")
             return load_qa_with_sources_chain(  
                 llm=llm,
                 chain_type=chain_type,
@@ -53,7 +53,6 @@ class QAChain:
                 **kwargs,
             )
         else:
-            logging.info(f"Initalizing QAChain without sources and {chain_type} chain.")
             return load_qa_chain(
                 llm=llm,
                 chain_type=chain_type,
