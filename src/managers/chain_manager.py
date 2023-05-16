@@ -1,5 +1,5 @@
 from typing import Dict, List, Optional, Type
-from src.chains import Chain, LLMChain
+from ..chains import Chain, LLMChain
 
 
 class ChainManager:

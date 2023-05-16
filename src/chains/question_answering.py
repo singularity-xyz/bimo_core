@@ -1,4 +1,4 @@
-from src.utils import logging
+from ..utils import logging
 from typing import Any, Optional
 from langchain.chains.base import Chain
 from langchain.chat_models import ChatOpenAI

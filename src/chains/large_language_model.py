@@ -4,8 +4,8 @@ from langchain.base_language import BaseLanguageModel
 from langchain.prompts.base import BasePromptTemplate
 # from langchain.prompts.chat import ChatPromptTemplate
 # need custom ChatPromptTemplate to resolve _prompt_type error
-from src.prompts import default_human_message_prompt, ChatPromptTemplate
-from src.utils import logging
+from ..prompts import default_human_message_prompt, ChatPromptTemplate
+from ..utils import logging
 
 
 class LLMChain(LargeLanguageModelChain):

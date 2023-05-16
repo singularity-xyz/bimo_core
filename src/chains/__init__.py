@@ -1,5 +1,5 @@
 # Utils
-import src.utils
+from ..utils import *
 
 # Public API
 from .base import Chain

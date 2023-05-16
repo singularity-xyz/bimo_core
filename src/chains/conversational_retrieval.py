@@ -1,7 +1,7 @@
-from src.utils import logging
-from typing import Any, Dict, Optional
+from ..utils import logging
 from .question_answering import QAChain
 from .large_language_model import LLMChain
+from typing import Any, Dict, Optional
 from langchain.schema import BaseRetriever
 from langchain.chat_models import ChatOpenAI
 from langchain.base_language import BaseLanguageModel
