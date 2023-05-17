@@ -7,9 +7,8 @@ load_dotenv()
 
 # Set OPENAI_API_KEY environment variable
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+#os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
 os.environ["MONGO_HOST"] = os.getenv("MONGO_HOST")
-os.environ["MONGO_PORT"] = os.getenv("MONGO_PORT")
 os.environ["MONGO_USER"] = os.getenv("MONGO_USER")
 os.environ["MONGO_PASSWORD"] = os.getenv("MONGO_PASSWORD")
 

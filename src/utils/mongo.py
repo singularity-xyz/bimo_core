@@ -1,29 +1,55 @@
-import os
+from momoai_core.src.utils import logging
 from pymongo import MongoClient
+from pymongo.errors import ConnectionFailure, OperationFailure
 
 class MongoDBClient:
-    def __init__(self, host=None, port=None, user=None, password=None, db_name='momoai'):
-        host = host if host is not None else os.getenv('MONGO_HOST', 'localhost')
-        port = port if port is not None else int(os.getenv('MONGO_PORT', 27017))
-        user = user if user is not None else os.getenv('MONGO_USER')
-        password = password if password is not None else os.getenv('MONGO_PASSWORD')
-        self.client = MongoClient(host, port, username=user, password=password)
-        self.db = self.client[db_name]
+    def __init__(self, host=None, port=None, username=None, password=None, db_name=None):
+        try:
+            # Create a MongoClient object and connect to the MongoDB server
+            self.client = MongoClient(host, port, username=username, password=password)
+            self.db = self.client[db_name]
 
-    def insert_data(self, data, collection_name='your_collection'):
-        if isinstance(data, dict):
-            self.db[collection_name].insert_one(data)
-        elif isinstance(data, list):
-            self.db[collection_name].insert_many(data)
-        else:
-            raise TypeError("Data should be either a dictionary (for one document) or a list (for multiple documents)")
+        except ConnectionFailure as e:
+            # Handle the ConnectionFailure exception
+            logging.error(f"Connection to MongoDB failed: {e}")
 
-    def find_data(self, query={}, collection_name='your_collection'):
-        results = self.db[collection_name].find(query)
-        return [result for result in results]
+        logging.info(f"Successfully connected to MongoDB client: {self.client}.")
 
-    def update_data(self, query, new_values, collection_name='your_collection'):
-        self.db[collection_name].update_many(query, {"$set": new_values})
+    def insert(self, data, collection):
+        try:
+            if isinstance(data, dict):
+                self.db[collection].insert_one(data)
+            elif isinstance(data, list):
+                self.db[collection].insert_many(data)
+            else:
+                raise TypeError("Data should be either a dictionary (for one document) or a list (for multiple documents)")
 
-    def clear_collection(self, collection_name='your_collection'):
-        self.db[collection_name].delete_many({})
+        except OperationFailure as e:
+            # Handle the OperationFailure exception
+            logging.error(f"Insert operation failed: {e}")
+
+    def find(self, collection, query={}):
+        try:
+            results = self.db[collection].find(query)
+            return [result for result in results]
+
+        except OperationFailure as e:
+            # Handle the OperationFailure exception
+            logging.error(f"Find operation failed: {e}")
+
+    def update(self, collection, new_values, query={}):
+        try:
+            self.db[collection].update_many(query, {"$set": new_values})
+
+        except OperationFailure as e:
+            # Handle the OperationFailure exception
+            logging.error(f"Update operation failed: {e}")
+
+    def clear_collection(self, collection):
+        try:
+            self.db[collection].delete_many({})
+
+        except OperationFailure as e:
+            # Handle the OperationFailure exception
+            logging.error(f"Delete operation failed: {e}")
+
