@@ -1,5 +1,5 @@
-from momoai_core.src.chains import CRChain
-from momoai_core.src.utils import logging
+from momoai_core import CRChain
+from momoai_core import logging
 from langchain.document_loaders import TextLoader
 from langchain.vectorstores import Chroma
 from langchain.text_splitter import CharacterTextSplitter
