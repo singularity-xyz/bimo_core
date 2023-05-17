@@ -4,8 +4,7 @@ from google.cloud import storage
 class GoogleCloudManager:
     def __init__(self, bucket_name):
         self.client = storage.Client()
-        self.bucket_name = bucket_name
-        self.bucket = self.client.get_bucket(self.bucket_name)
+        self.bucket = self.client.get_bucket(bucket_name)
 
     def _get_blob(self, blob_name):
         """Creates a blob object."""
