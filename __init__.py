@@ -1,6 +1,6 @@
 
 from momoai_core.src.utils import logging
-from momoai_core.src.utils import GCStorage
+#from momoai_core.src.utils import GCStorage
 from momoai_core.src.utils import MongoDBClient
 
 from momoai_core.src import chains
