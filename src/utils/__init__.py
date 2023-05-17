@@ -1,2 +1,3 @@
 # Public API
-from .config import *
+from .config import logging
+from .google import GCStorage

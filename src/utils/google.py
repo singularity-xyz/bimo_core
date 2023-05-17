@@ -1,7 +1,8 @@
+import datetime
 from google.cloud import storage
 
 
-class GoogleCloudManager:
+class GCStorage:
     def __init__(self, bucket_name):
         self.client = storage.Client()
         self.bucket = self.client.get_bucket(bucket_name)
@@ -31,10 +32,10 @@ class GoogleCloudManager:
         blob = self._get_blob(blob_name)
         blob.delete()
 
-    def generate_signed_url(self, blob_name, expiration=300):
+    def generate_signed_url(self, blob_name, expiration=3600):
         """Generates a signed URL for a blob."""
         blob = self._get_blob(blob_name)
-        url = blob.generate_signed_url(expiration=expiration)
+        url = blob.generate_signed_url(datetime.timedelta(seconds=expiration))
         return url
 
     def get_blob_metadata(self, blob_name):

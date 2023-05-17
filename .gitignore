@@ -1,5 +1,7 @@
 .env
-__pycache__
+gcp.json
+
 data/
 deeplake/
 build/
+__pycache__/
