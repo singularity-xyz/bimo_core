@@ -1,6 +1,13 @@
+from typing import Mapping
 from momoai_core.src.utils import logging
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, OperationFailure
+
+# immutable collections dictionary
+class MongoCollections:
+    user = "User"
+    document = "Document"
+
 
 class MongoDBClient:
     def __init__(self, host=None, port=None, username=None, password=None, db_name=None):
