@@ -11,6 +11,7 @@ os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 os.environ["MONGO_HOST"] = os.getenv("MONGO_HOST")
 os.environ["MONGO_USER"] = os.getenv("MONGO_USER")
 os.environ["MONGO_PASSWORD"] = os.getenv("MONGO_PASSWORD")
+os.environ["DB"] = os.getenv("DB")
 
 module_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 
