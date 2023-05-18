@@ -5,8 +5,8 @@ from pymongo.errors import ConnectionFailure, OperationFailure
 
 # immutable collections dictionary
 class MongoCollections:
-    user = "User"
-    document = "Document"
+    users = "Users"
+    documents = "Documents"
 
 
 class MongoDBClient:
