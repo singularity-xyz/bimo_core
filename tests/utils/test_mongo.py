@@ -34,3 +34,6 @@ def test_update(db_client):
     # Ignore the _id field in comparison
     updated_data = {"_id": 1, "name": "John", "age": 35, "city": "New York"}
     assert result == [updated_data]
+
+def test_cleanup(db_client):
+    db_client.clear_collection(MongoCollections.users)
