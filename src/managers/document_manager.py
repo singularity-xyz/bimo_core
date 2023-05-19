@@ -6,17 +6,26 @@
 6. Generate a retriever from the vectorstore    
 """
 
-from langchain.document_loaders import PyPDFLoader
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.vectorstores import DeepLake
-from langchain.schema import BaseRetriever
+import uuid
 
+from langchain.document_loaders import PyPDFLoader
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.schema import BaseRetriever
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.vectorstores import DeepLake
+from momoai_core.src.utils import GCSClient
+from langchain.vectorstores import DeepLake
+
+class DocumentMetadata:
+    id: uuid
+    user_id: uuid
+    name: str
+    class_name: str = None
 
 class DocumentManager:
-    def __init__(self):
-        self.db = None # some mongo db connection instance
-        self.vector_store = DeepLake(dataset_path="deeplake", embedding_function=OpenAIEmbeddings())
+    def __init__(self, gcs: GCSClient, vector_store: DeepLake):
+        self.gcs = gcs 
+        self.vector_store = vector_store
 
     def upload_document(self, user_id: str, class_id: str, document_id: str) -> None:
         self.generate_embeddings(user_id, class_id, document_id)

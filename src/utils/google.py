@@ -3,7 +3,7 @@ from google.cloud import storage
 
 
 class GCSClient:
-    def __init__(self, bucket_name):
+    def __init__(self, bucket_name: str):
         self.client = storage.Client()
         self.bucket = self.client.get_bucket(bucket_name)
 
