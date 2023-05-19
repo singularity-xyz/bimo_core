@@ -1,6 +1,6 @@
 import os
 import pytest
-from momoai_core import GCStorage
+from momoai_core import GCSClient
 from momoai_core import logging
 
 # Replace with your actual test bucket name
@@ -11,7 +11,7 @@ TEST_FILE = 'user-1/clas-151/syllabus.pdf'
 
 @pytest.fixture(scope="module")
 def gc_storage():
-    return GCStorage(TEST_BUCKET_NAME)
+    return GCSClient(TEST_BUCKET_NAME)
 
 # def test_upload_blob(gc_storage):
 #     gc_storage.upload_blob(TEST_FILE, TEST_FILE)

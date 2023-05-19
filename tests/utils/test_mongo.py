@@ -7,7 +7,13 @@ from momoai_core import MongoCollections
 # Define a fixture for the MongoDB client
 @pytest.fixture
 def db_client():
-    client = MongoDBClient(host=os.environ["MONGO_HOST"], port=int(os.environ["MONGO_PORT"]), username=os.environ["MONGO_USER"], password=os.environ["MONGO_PASSWORD"], db_name=os.environ["DB"])
+    client = MongoDBClient(
+        host=os.environ["MONGO_HOST"],
+        port=int(os.environ["MONGO_PORT"]),
+        username=os.environ["MONGO_USER"],
+        password=os.environ["MONGO_PASSWORD"],
+        db_name=os.environ["MONGO_DB_NAME"]
+    )
     client.clear_collection(MongoCollections.users)  # Clear the collection after each test
     return client
 

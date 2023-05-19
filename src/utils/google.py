@@ -2,7 +2,7 @@ import datetime
 from google.cloud import storage
 
 
-class GCStorage:
+class GCSClient:
     def __init__(self, bucket_name):
         self.client = storage.Client()
         self.bucket = self.client.get_bucket(bucket_name)
