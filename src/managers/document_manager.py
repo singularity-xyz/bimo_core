@@ -19,7 +19,7 @@ class DocumentManager:
         self.vector_store = DeepLake(dataset_path="deeplake", embedding_function=OpenAIEmbeddings())
 
     def upload_document(self, user_id: str, class_id: str, document_id: str) -> None:
-        generate_embeddings(user_id, class_id, document_id)
+        self.generate_embeddings(user_id, class_id, document_id)
 
     def get_document(self, user_id: str, class_id: str, document_id: str) -> None:
         pass
