@@ -17,6 +17,7 @@ class GCSClient:
         """Uploads a file to the bucket."""
         blob = self._get_blob(destination_blob_name)
         content_type, _ = mimetypes.guess_type(destination_blob_name)
+        print(destination_blob_name, content_type)
         content_type = content_type or 'application/octet-stream'
         blob.upload_from_file(blob_data, content_type=content_type)
 
