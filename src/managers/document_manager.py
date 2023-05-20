@@ -7,41 +7,50 @@
 """
 
 import uuid
+from io import BytesIO
+from PyPDF2 import PdfReader, PdfWriter
 
+from langchain.schema import BaseRetriever
 from langchain.document_loaders import PyPDFLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.schema import BaseRetriever
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import DeepLake
 from momoai_core.src.utils import GCSClient
-from langchain.vectorstores import DeepLake
+
 
 class DocumentMetadata:
     id: uuid
     user_id: uuid
-    name: str
+    name: str = None
     class_name: str = None
 
+
 class DocumentManager:
-    def __init__(self, gcs: GCSClient, vector_store: DeepLake):
-        self.gcs = gcs 
-        self.vector_store = vector_store
+    def __init__(self, gcs_client: GCSClient=None, vector_store: DeepLake=None):
+        self.gcs_client = gcs_client or GCSClient(bucket_name="momoai")
+        self.vector_store = vector_store or DeepLake(dataset_path="deeplake_dataset", embeddings=OpenAIEmbeddings())
 
-    def upload_document(self, user_id: str, class_id: str, document_id: str) -> None:
-        self.generate_embeddings(user_id, class_id, document_id)
+    def _generate_blob_name(self, document_metadata: DocumentMetadata) -> str:
+        return f"{document_metadata.user_id}/{document_metadata.id}"
 
-    def get_document(self, user_id: str, class_id: str, document_id: str) -> None:
-        pass
-        
-    def generate_embeddings(self, user_id: str, class_id: str, document_id: str) -> None:
-        file_path = f"./{user_id}/{class_id}/{document_id}"
-        loader = PyPDFLoader(file_path)
-        documents = loader.load_and_split()
+    def _upload_embeddings(self, document_metadata: DocumentMetadata, file_content) -> None:
+        bytes_stream = BytesIO(file_content)
+        reader = PdfReader(bytes_stream)
+        documents = reader.pages
         text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
         texts = text_splitter.split_documents(documents)
         self.vector_store.add_documents(texts)
 
-    def get_db(self) -> DeepLake:
+    def upload_document(self, document_metadata: DocumentMetadata, file_content) -> None:
+        destination_blob_name = self._generate_blob_name(document_metadata)
+        self.gcs_client.upload_blob(file_content, destination_blob_name)
+        self._upload_embeddings(document_metadata, file_content)
+
+    def get_document(self, document_metadata: DocumentMetadata) -> None:
+        blob_name = self._generate_blob_name(document_metadata)
+        return self.gcs_client.download_blob(blob_name)
+
+    def get_vector_store(self) -> DeepLake:
         return self.vector_store
 
     def get_retriever(self) -> BaseRetriever:

@@ -8,4 +8,4 @@ from momoai_core.src import managers
 from momoai_core.src import tools
 
 from momoai_core.src.chains import LLMChain, CRChain, QAChain
-from momoai_core.src.managers import ChainManager, DocumentManager
+from momoai_core.src.managers import ChainManager, DocumentManager, DocumentMetadata

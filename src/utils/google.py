@@ -12,10 +12,10 @@ class GCSClient:
         blob = self.bucket.blob(blob_name)
         return blob
 
-    def upload_blob(self, source_file_name, destination_blob_name):
+    def upload_blob(self, blob_data, destination_blob_name):
         """Uploads a file to the bucket."""
         blob = self._get_blob(destination_blob_name)
-        blob.upload_from_filename(source_file_name)
+        blob.upload_from_file(blob_data)
 
     def download_blob(self, blob_name, destination_file_name):
         """Downloads a blob from the bucket."""
