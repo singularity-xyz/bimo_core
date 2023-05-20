@@ -3,5 +3,4 @@ gcp.json
 
 data/
 deeplake/
-build/
 __pycache__/
