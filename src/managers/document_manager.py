@@ -27,15 +27,14 @@ class DocumentMetadata:
 
 class DocumentManager:
     def __init__(self, gcs_client: GCSClient=None, vector_store: DeepLake=None):
-        self.gcs_client = gcs_client or GCSClient(bucket_name="momoai")
-        self.vector_store = vector_store or DeepLake(dataset_path="deeplake_dataset", embeddings=OpenAIEmbeddings())
+        self.gcs_client = gcs_client or GCSClient(bucket_name="momo-ai")
+        self.vector_store = vector_store or DeepLake(dataset_path="deeplake_dataset", embedding_function=OpenAIEmbeddings())
 
     def _generate_blob_name(self, document_metadata: DocumentMetadata) -> str:
         return f"{document_metadata.user_id}/{document_metadata.id}"
 
     def _upload_embeddings(self, document_metadata: DocumentMetadata, file_content) -> None:
-        bytes_stream = BytesIO(file_content)
-        reader = PdfReader(bytes_stream)
+        reader = PdfReader(file_content)
         documents = reader.pages
         text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
         texts = text_splitter.split_documents(documents)
