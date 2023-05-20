@@ -1,12 +1,5 @@
-"""
-1. Upload document file to the database
-2. Get document file from the database
-3. Split document file into chunks
-4. Generate embeddings and add to the vectorstore
-6. Generate a retriever from the vectorstore    
-"""
-
 import uuid
+import tempfile
 from io import BytesIO
 from PyPDF2 import PdfReader, PdfWriter
 
@@ -33,16 +26,25 @@ class DocumentManager:
     def _generate_blob_name(self, document_metadata: DocumentMetadata) -> str:
         return f"{document_metadata.user_id}/{document_metadata.id}"
 
-    def _upload_embeddings(self, document_metadata: DocumentMetadata, file_content) -> None:
-        reader = PdfReader(file_content)
-        documents = reader.pages
-        text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-        texts = text_splitter.split_documents(documents)
-        self.vector_store.add_documents(texts)
+    def _upload_embeddings(self, document_metadata: DocumentMetadata, file_content: BytesIO) -> None:
+        # Create a temporary file and save the content of the BytesIO object to it
+        with tempfile.NamedTemporaryFile(delete=True) as temp:
+            temp.write(file_content.read())
+            temp.flush()  # Ensure all data is written to the file
 
-    def upload_document(self, document_metadata: DocumentMetadata, file_content) -> None:
+            loader = PyPDFLoader(temp.name)
+            documents = loader.load_and_split()
+
+            text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+            texts = text_splitter.split_documents(documents)
+
+            self.vector_store.add_documents(texts)
+
+    def upload_document(self, document_metadata: DocumentMetadata, file_content: BytesIO) -> None:
         destination_blob_name = self._generate_blob_name(document_metadata)
         self.gcs_client.upload_blob(file_content, destination_blob_name)
+        # After uploading the blob, reset the position of the file content
+        file_content.seek(0)
         self._upload_embeddings(document_metadata, file_content)
 
     def get_document(self, document_metadata: DocumentMetadata) -> None:

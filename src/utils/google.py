@@ -1,4 +1,5 @@
 import datetime
+import mimetypes
 from google.cloud import storage
 
 
@@ -15,7 +16,9 @@ class GCSClient:
     def upload_blob(self, blob_data, destination_blob_name):
         """Uploads a file to the bucket."""
         blob = self._get_blob(destination_blob_name)
-        blob.upload_from_file(blob_data)
+        content_type, _ = mimetypes.guess_type(destination_blob_name)
+        content_type = content_type or 'application/octet-stream'
+        blob.upload_from_file(blob_data, content_type=content_type)
 
     def download_blob(self, blob_name, destination_file_name):
         """Downloads a blob from the bucket."""
