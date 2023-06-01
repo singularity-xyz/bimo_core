@@ -40,14 +40,19 @@ class DocumentManager:
     
     def get_document_retriever(self, document_metadata: List[DocumentMetadata]) -> BaseRetriever:
         retriever = self._get_retriever()
+    
         if len(document_metadata) == 0:
-            return self.get_retriever()
+            return retriever
         else:
-            metadata_filter = [
-                {"user_id": i.user_id, "document_id": i.id}
-                for i in document_metadata
-            ]
-            retriever.search_kwargs = {"filter": metadata_filter}
+            def filter(x):
+                metadata = x['metadata'].data()['value']
+
+                for document in document_metadata:
+                    if str(document.id) == metadata['document_id']:
+                        return True
+                
+            retriever.search_kwargs["filter"] =  filter
+            
             return retriever
 
 
@@ -61,13 +66,6 @@ class DocumentManager:
         return f"{document_metadata.user_id}/{document_metadata.id}/{document_metadata.name}"
 
     def _upload_embeddings(self, document_metadata: DocumentMetadata, file_content: BytesIO) -> None:
-        metadata = {
-            "user_id": document_metadata.user_id,
-            "document_id": document_metadata.id,
-            "document_name": document_metadata.name,
-            "class_name": document_metadata.class_name
-        }
-
         # Create a temporary file and save the content of the BytesIO object to it
         with tempfile.NamedTemporaryFile(delete=True) as temp:
             temp.write(file_content.read())
@@ -79,4 +77,7 @@ class DocumentManager:
             text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
             texts = text_splitter.split_documents(documents)
 
-            self.vector_store.add_documents(texts, metadata=metadata)
+            for text in texts:
+                text.metadata["document_id"] = str(document_metadata.id)
+
+            self.vector_store.add_documents(texts)

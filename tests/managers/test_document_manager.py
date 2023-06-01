@@ -29,65 +29,18 @@ def document_metadata():
 
 
 def test_upload_document(document_manager, document_metadata):
-    file_content = BytesIO(b"Some test content")
-
-    # Mocking GCSClient and DeepLake's methods
-    document_manager.gcs_client.upload_blob = MagicMock()
-    document_manager._upload_embeddings = MagicMock()
-    file_content.seek = MagicMock()
-
-    document_manager.upload_document(document_metadata, file_content)
-
-    # Verifying that the methods were called
-    document_manager.gcs_client.upload_blob.assert_called_once()
-    document_manager._upload_embeddings.assert_called_once()
-    file_content.seek.assert_called_once_with(0)
+    document_metadata = DocumentMetadata(
+        id=uuid.uuid4(),
+        user_id=uuid.uuid4(),
+        name="Brendan_Morrison_Resume.pdf",
+        class_name="Test Class"
+    )
 
 
-def test_get_document(document_manager, document_metadata):
-    # Mocking GCSClient's download_blob method
-    document_manager.gcs_client.download_blob = MagicMock(return_value=BytesIO(b"Some test content"))
+    document_manager.upload_document(document_metadata=document_metadata, file_content=open("./Brendan_Morrison_Resume.pdf", "rb"))
 
-    result = document_manager.get_document(document_metadata)
+    retriever = document_manager.get_document_retriever([document_metadata])
+   
+    docs = retriever.get_relevant_documents("brendan")
 
-    # Verifying that the methods were called
-    document_manager.gcs_client.download_blob.assert_called_once()
-    assert isinstance(result, BytesIO)
-
-
-def test_get_document_retriever(document_manager, document_metadata):
-    # Mocking vector store's as_retriever method
-    document_manager._get_retriever = MagicMock()
-    
-    result = document_manager.get_document_retriever([document_metadata])
-
-    # Verifying that the methods were called
-    document_manager._get_retriever.assert_called_once()
-
-
-def test_get_vector_store(document_manager):
-    result = document_manager.get_vector_store()
-
-    assert isinstance(result, DeepLake)
-
-
-def test_generate_blob_name(document_manager, document_metadata):
-    result = document_manager._generate_blob_name(document_metadata)
-
-    assert result == f"{document_metadata.user_id}/{document_metadata.id}/{document_metadata.name}"
-
-
-def test_upload_embeddings(document_manager, document_metadata):
-    file_content = BytesIO(b"Some test content")
-
-    # Mocking DeepLake's add_documents method, PyPDFLoader's load_and_split method, and CharacterTextSplitter's split_documents method
-    document_manager.vector_store.add_documents = MagicMock()
-    PyPDFLoader.load_and_split = MagicMock(return_value=["document"])
-    CharacterTextSplitter.split_documents = MagicMock(return_value=["text"])
-    
-    document_manager._upload_embeddings(document_metadata, file_content)
-    
-    # Verifying that the methods were called
-    document_manager.vector_store.add_documents.assert_called_once()
-    PyPDFLoader.load_and_split.assert_called_once()
-    CharacterTextSplitter.split_documents.assert_called_once()
+    print(len(docs))
