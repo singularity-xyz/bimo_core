@@ -42,7 +42,7 @@ class DocumentManager:
         return self.vector_store.as_retriever()
 
     def _generate_blob_name(self, document_metadata: DocumentMetadata) -> str:
-        return f"{document_metadata.user_id}/{document_metadata.id}"
+        return f"{document_metadata.user_id}/{document_metadata.id}/{document_metadata.name}"
 
     def _upload_embeddings(self, document_metadata: DocumentMetadata, file_content: BytesIO) -> None:
         # Create a temporary file and save the content of the BytesIO object to it
