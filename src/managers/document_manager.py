@@ -18,7 +18,6 @@ class DocumentMetadata:
     id: uuid.UUID
     user_id: uuid.UUID
     name: str = None
-    class_name: str = None
 
 
 class DocumentManager:
@@ -38,22 +37,25 @@ class DocumentManager:
         blob_name = self._generate_blob_name(document_metadata)
         return self.gcs_client.download_blob(blob_name)
     
-    def get_document_retriever(self, document_metadata: List[DocumentMetadata]) -> BaseRetriever:
+    def get_document_retriever(self, user_id: uuid.uuid4, document_metadatas: List[DocumentMetadata]) -> BaseRetriever:
         retriever = self._get_retriever()
     
-        if len(document_metadata) == 0:
-            return retriever
+        if len(document_metadatas) == 0:
+            def filter(x):
+                metadata = x['metadata'].data()['value']
+                if str(user_id) == metadata['user_id']:
+                    return True
         else:
             def filter(x):
                 metadata = x['metadata'].data()['value']
 
-                for document in document_metadata:
-                    if str(document.id) == metadata['document_id']:
+                for document_metadata in document_metadatas:
+                    if (str(document_metadata.id) == metadata['document_id']) and (str(user_id) == metadata['user_id']):
                         return True
                 
-            retriever.search_kwargs["filter"] =  filter
+        retriever.search_kwargs["filter"] =  filter
             
-            return retriever
+        return retriever
 
 
     def get_vector_store(self) -> DeepLake:
@@ -79,5 +81,7 @@ class DocumentManager:
 
             for text in texts:
                 text.metadata["document_id"] = str(document_metadata.id)
+                text.metadata["user_id"] = str(document_metadata.user_id)
+                text.metadata["name"] = str(document_metadata.name)
 
             self.vector_store.add_documents(texts)
