@@ -26,12 +26,31 @@ class DocumentManager:
         self.vector_store = vector_store or DeepLake(dataset_path="deeplake", embedding_function=OpenAIEmbeddings())
 
     # somewhere in here we need to add the metadata to mongo db
-    def upload_document(self, document_metadata: DocumentMetadata, file_content: BytesIO) -> None:
+    def upload_document(self, document_metadata: DocumentMetadata, file_stream: BytesIO) -> str:
         destination_blob_name = self._generate_blob_name(document_metadata)
-        self.gcs_client.upload_blob(file_content, destination_blob_name)
-        # After uploading the blob, reset the position of the file content
-        file_content.seek(0)
-        self._upload_embeddings(document_metadata, file_content)
+        self.gcs_client.upload_blob(file_stream, destination_blob_name)
+        # We need to return the signed url to the client ASAP, and do the rest of the processing in the background
+        signed_url = self.gcs_client.generate_signed_url(destination_blob_name)
+        return signed_url
+
+    def upload_embeddings(self, document_metadata: DocumentMetadata, file_stream: BytesIO) -> None:
+        # Create a temporary file and save the content of the BytesIO object to it
+        with tempfile.NamedTemporaryFile(delete=True) as temp:
+            temp.write(file_stream.read())
+            temp.flush()  # Ensure all data is written to the file
+
+            loader = PyPDFLoader(temp.name)
+            documents = loader.load_and_split()
+
+            text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+            texts = text_splitter.split_documents(documents)
+
+            for text in texts:
+                text.metadata["user_id"] = str(document_metadata.user_id)
+                text.metadata["document_id"] = str(document_metadata.id)
+                text.metadata["name"] = str(document_metadata.name)
+
+            self.vector_store.add_documents(texts)
 
     def get_document(self, document_metadata: DocumentMetadata) -> None:
         blob_name = self._generate_blob_name(document_metadata)
@@ -66,22 +85,3 @@ class DocumentManager:
 
     def _generate_blob_name(self, document_metadata: DocumentMetadata) -> str:
         return f"{document_metadata.user_id}/{document_metadata.id}/{document_metadata.name}"
-
-    def _upload_embeddings(self, document_metadata: DocumentMetadata, file_content: BytesIO) -> None:
-        # Create a temporary file and save the content of the BytesIO object to it
-        with tempfile.NamedTemporaryFile(delete=True) as temp:
-            temp.write(file_content.read())
-            temp.flush()  # Ensure all data is written to the file
-
-            loader = PyPDFLoader(temp.name)
-            documents = loader.load_and_split()
-
-            text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-            texts = text_splitter.split_documents(documents)
-
-            for text in texts:
-                text.metadata["document_id"] = str(document_metadata.id)
-                text.metadata["user_id"] = str(document_metadata.user_id)
-                text.metadata["name"] = str(document_metadata.name)
-
-            self.vector_store.add_documents(texts)
