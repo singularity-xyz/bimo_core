@@ -1,6 +1,6 @@
 import pytest
-from momoai_core import LLMChain
-from momoai_core import logging
+from bimo_core import LLMChain
+from bimo_core import logging
 
 
 @pytest.mark.parametrize("message,expected_response", [

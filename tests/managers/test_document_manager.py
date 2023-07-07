@@ -2,13 +2,13 @@ import pytest
 import uuid
 from io import BytesIO
 from unittest.mock import MagicMock
-from momoai_core.src.utils import GCSClient
+from bimo_core.src.utils import GCSClient
 from langchain.vectorstores import DeepLake
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
 
-from momoai_core import DocumentManager, DocumentMetadata  # adjust import as needed
+from bimo_core import DocumentManager, DocumentMetadata  # adjust import as needed
 
 
 @pytest.fixture

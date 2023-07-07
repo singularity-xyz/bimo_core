@@ -1,5 +1,5 @@
-from momoai_core import CRChain
-from momoai_core import logging
+from bimo_core import CRChain
+from bimo_core import logging
 from langchain.document_loaders import TextLoader
 from langchain.vectorstores import Chroma
 from langchain.text_splitter import CharacterTextSplitter

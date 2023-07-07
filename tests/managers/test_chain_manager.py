@@ -1,7 +1,7 @@
 # import pytest
-# from momoai_core import LLMChain
-# from momoai_core import ChainManager
-# from momoai_core import logging
+# from bimo_core import LLMChain
+# from bimo_core import ChainManager
+# from bimo_core import logging
 
 # @pytest.fixture
 # def chain_manager():

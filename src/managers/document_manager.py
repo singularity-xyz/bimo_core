@@ -9,7 +9,7 @@ from langchain.document_loaders import PyPDFLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import DeepLake
-from momoai_core.src.utils import GCSClient
+from bimo_core.src.utils import GCSClient
 from dataclasses import dataclass
 import uuid
 

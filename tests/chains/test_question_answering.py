@@ -1,4 +1,4 @@
-from momoai_core import QAChain
+from bimo_core import QAChain
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Chroma

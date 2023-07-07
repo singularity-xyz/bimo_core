@@ -30,4 +30,3 @@ Any additional notes on the module's usage within the broader application.
 # Convenience imports
 from .chain_manager import ChainManager
 from .document_manager import DocumentManager, DocumentMetadata
-from .tool_manager import ToolManager

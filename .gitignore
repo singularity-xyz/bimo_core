@@ -4,3 +4,4 @@ gcp.json
 data/
 deeplake/
 __pycache__/
+.DS_Store

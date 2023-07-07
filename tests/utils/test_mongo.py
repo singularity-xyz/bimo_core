@@ -1,7 +1,7 @@
 import os
 import pytest
-from momoai_core import MongoDBClient
-from momoai_core import MongoCollections
+from bimo_core import MongoDBClient
+from bimo_core import MongoCollections
 
 
 # Define a fixture for the MongoDB client

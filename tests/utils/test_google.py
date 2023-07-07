@@ -1,7 +1,7 @@
 import os
 import pytest
-from momoai_core import GCSClient
-from momoai_core import logging
+from bimo_core import GCSClient
+from bimo_core import logging
 
 # Replace with your actual test bucket name
 TEST_BUCKET_NAME = 'momo-ai'

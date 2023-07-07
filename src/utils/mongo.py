@@ -1,5 +1,5 @@
 from typing import Mapping
-from momoai_core.src.utils import logging
+from bimo_core.src.utils import logging
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, OperationFailure
 
