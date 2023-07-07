@@ -32,7 +32,7 @@ class LLMChain(LargeLanguageModelChain):
 
     def __init__(
         self,
-        llm: BaseLanguageModel = ChatOpenAI(verbose=True),
+        llm: BaseLanguageModel = ChatOpenAI(),
         prompt: BasePromptTemplate = ChatPromptTemplate.from_messages([default_human_message_prompt]),
         verbose: bool = False
     ):

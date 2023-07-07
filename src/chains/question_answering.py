@@ -37,7 +37,7 @@ class QAChain:
 
     def __new__(
         self,
-        llm: BaseLanguageModel = ChatOpenAI(verbose=True),
+        llm: BaseLanguageModel = ChatOpenAI(),
         chain_type: str = "stuff",
         verbose: Optional[bool] = False,
         with_sources: bool = True,

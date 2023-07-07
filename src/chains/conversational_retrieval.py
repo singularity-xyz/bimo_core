@@ -49,7 +49,7 @@ class CRChain(ConversationalRetrievalChain):
     def __init__(
         self,
         retriever: BaseRetriever,
-        llm: BaseLanguageModel = ChatOpenAI(verbose=True),
+        llm: BaseLanguageModel = ChatOpenAI(),
         condense_question_prompt: BasePromptTemplate = CONDENSE_QUESTION_PROMPT,
         chain_type: str = "stuff",
         verbose: bool = False,
