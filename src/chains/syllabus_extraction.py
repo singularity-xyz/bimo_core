@@ -1,4 +1,4 @@
-from langchain.chains import create_extraction_chain_pydantic
+from .extraction import create_extraction_chain_pydantic
 from langchain.chat_models import ChatOpenAI
 
 from typing import Optional, List
