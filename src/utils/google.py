@@ -1,11 +1,22 @@
+import os
 import datetime
 import mimetypes
 from google.cloud import storage
-
+from google.oauth2 import service_account
 
 class GCSClient:
     def __init__(self, bucket_name: str):
-        self.client = storage.Client()
+        credentials_info = {
+            "type": os.getenv("GOOGLE_TYPE"),
+            "project_id": os.getenv("GOOGLE_PROJECT_ID"),
+            "private_key_id": os.getenv("GOOGLE_PRIVATE_KEY_ID"),
+            "private_key": os.getenv("GOOGLE_PRIVATE_KEY").replace("\\n", "\n"),
+            "client_email": os.getenv("GOOGLE_CLIENT_EMAIL"),
+            "client_id": os.getenv("GOOGLE_CLIENT_ID"),
+            "token_uri": "https://oauth2.googleapis.com/token",
+        }
+        credentials = service_account.Credentials.from_service_account_info(credentials_info)
+        self.client = storage.Client(credentials=credentials)
         self.bucket = self.client.get_bucket(bucket_name)
 
     def _get_blob(self, blob_name):
