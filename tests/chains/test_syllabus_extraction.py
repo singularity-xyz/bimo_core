@@ -35,68 +35,36 @@ from pydantic import BaseModel
 #     # logging.info("Input: %s", inp)
 #     # logging.info("Response: %s", [r.dict() for r in response])  # use .dict() to convert Pydantic models to dictionaries for logging
 
-
+from enum import Enum
 from typing import Optional, List
 from pydantic import BaseModel, Field
 
-
-class School(BaseModel):
-    id: str
-    name: str
-
-class Course(BaseModel):
-    id: str
-    course_code: str
-    name: str
-    department: str
-    professor_name: Optional[str]
-    professor_email: Optional[str]
-    description: Optional[str]
-    school: School
-
 class Assignment(BaseModel):
-    id: str
-    name: str
-    due_date: str
+    id: Optional[str]
+    name: Optional[str]
     description: Optional[str]
-    priority: Optional[int]
-    completed: Optional[bool]
-
-class Document(BaseModel):
-    id: str
-    name: str
-    type: str
-    url: str
+    due_date: Optional[str]
+    weightage: Optional[float]
 
 class Exam(BaseModel):
-    id: str
-    name: str
-    start_time: str
-    end_time: Optional[str]
+    id: Optional[str]
+    name: Optional[str]
     description: Optional[str]
-    priority: Optional[int]
+    date: Optional[str]
+    weightage: Optional[float]
 
-class Task(BaseModel):
-    id: str
-    name: str
-    date: str
-    description: Optional[str]
-    priority: Optional[int]
-    completed: Optional[bool]
-
-class UserCourse(BaseModel):
-    course: Course
-    assignments: List[Assignment] = []
-    documents: List[Document] = []
-    exams: List[Exam] = []
-    tasks: List[Task] = []
+class Syllabus(BaseModel):
+    id: Optional[str]
+    course_code: Optional[str]
+    course_name: Optional[str]
+    assignments: Optional[List[Assignment]] = []
+    exams: Optional[List[Exam]] = []
 
 
 def test_syllabus_extraction():
     chain = SEChain()
 
     inp = """
-    1.16.2020
     ENST 100: Introduction to Environmental Studies
     Units: 4
     Fall 2020: Tuesdays/Thursdays 2:00-3:20pm
@@ -191,7 +159,7 @@ def test_syllabus_extraction():
     result in a grade of “0” for that particular exam.
     Assignments
     'Environment in the News' Discussion: We will start off each class with a brief (5 minute) discussion about
-    a local, national, or global environmental news story. Each student will be required to participate and select 
+    a local, national, or global environmental news story. Each student will be required to participate and select
     Page 3
     a date to review and discuss a recent news article as well as your analysis on whether you believe the article
     was biased.
@@ -225,7 +193,8 @@ def test_syllabus_extraction():
     own daily life, and weigh the benefits, risks, and unintended consequences for society and the
     environment. You will be encouraged to speak and interact with your fellow students, share your own
     perspectives and experiences, and to complete the related "mini" activities.
-    As a record of active participation and attendance, you will be asked to complete and submit ‘mini’ inclass work activities individually or in teams, e.g., collect some data, watch and reflect on a video or
+    As a record of active participation and attendance, you will be asked to complete and submit ‘mini’ in-
+    class work activities individually or in teams, e.g., collect some data, watch and reflect on a video or
     newspaper story, calculate your environmental footprint, participate in discussion, write a minute-paper,
     etc. These activities will help to illustrate key course concepts; some activities will help me (and you) to
     gauge your understanding of the topics as we progress through the course, and allow me to provide
@@ -237,8 +206,7 @@ def test_syllabus_extraction():
     you cannot make it to a particular class, you will need to let me know prior to the start of a class. If it is an
     excused absence, then I will provide you with an alternative way to obtain the associated in-class activity
     points outside of class.
-
-    Full assignment & exam instructions will be posted to Blackboard and revisited throughout the term. 
+    Full assignment & exam instructions will be posted to Blackboard and revisited throughout the term.
     Page 4
     Assignment Submission Policy
     Unless otherwise specified, all assignments are due by 5:00 pm California time via Blackboard Turnitin. The
@@ -249,7 +217,6 @@ def test_syllabus_extraction():
     Missed classes
     You are responsible for any material covered in class and related discussions, exercises and activities.
     Participation during regular class time is expected and encouraged.
-
     Technology:
     During class time, please refrain from accessing the internet and email for reasons other than those directly
     relevant to our class.
@@ -342,8 +309,7 @@ def test_syllabus_extraction():
     Final exams will be held November 17-24. Refer to the final exam schedule in the USC Schedule of Classes at
     https://classes.usc.edu/term-20203/finals/
     Page 6
-    Our Course Code of Conduct1
-    :
+    Our Course Code of Conduct 1 :
     1. Share responsibility for including all voices in the conversation. If you tend to have a lot to say, make
     sure you leave sufficient space to hear from others. If you tend to stay quiet in group discussions,
     challenge yourself to contribute so others can learn from you.
@@ -379,60 +345,6 @@ def test_syllabus_extraction():
     why the approach could work.
     1 Adapted from the University of Michigan Center for Research on Learning and Teaching (CRLT) Discussion
     Guidelines: http://www.crlt.umich.edu/examples-discussion-guidelines
-    Page 7
-    Student Support Systems & Resources
-    Counseling and Mental Health - (213) 740-9355 – 24/7 on call
-    studenthealth.usc.edu/counseling
-    Free and confidential mental health treatment for students, including short-term psychotherapy, group
-    counseling, stress fitness workshops, and crisis intervention.
-    National Suicide Prevention Lifeline - 1 (800) 273-8255 – 24/7 on call
-    suicidepreventionlifeline.org
-    Free and confidential emotional support to people in suicidal crisis or emotional distress 24 hours a day, 7
-    days a week.
-    Relationship and Sexual Violence Prevention Services (RSVP) - (213) 740-9355(WELL), press “0” after hours –
-    24/7 on call
-    studenthealth.usc.edu/sexual-assault
-    Free and confidential therapy services, workshops, and training for situations related to gender-based
-    harm.
-    Office of Equity and Diversity (OED) - (213) 740-5086 | Title IX – (213) 821-8298
-    equity.usc.edu, titleix.usc.edu
-    Information about how to get help or help someone affected by harassment or discrimination, rights of
-    protected classes, reporting options, and additional resources for students, faculty, staff, visitors, and
-    applicants.
-    Reporting Incidents of Bias or Harassment - (213) 740-5086 or (213) 821-8298
-    usc-advocate.symplicity.com/care_report
-    Avenue to report incidents of bias, hate crimes, and microaggressions to the Office of Equity and Diversity
-    |Title IX for appropriate investigation, supportive measures, and response.
-    The Office of Disability Services and Programs - (213) 740-0776
-    dsp.usc.edu
-    Support and accommodations for students with disabilities. Services include assistance in providing
-    readers/notetakers/interpreters, special accommodations for test taking needs, assistance with
-    architectural barriers, assistive technology, and support for individual needs.
-    USC Campus Support and Intervention - (213) 821-4710
-    campussupport.usc.edu
-    Assists students and families in resolving complex personal, financial, and academic issues adversely
-    affecting their success as a student.
-    Diversity at USC - (213) 740-2101
-    diversity.usc.edu
-    Information on events, programs and training, the Provost’s Diversity and Inclusion Council, Diversity
-    Liaisons for each academic school, chronology, participation, and various resources for students.
-    Student Equity and Inclusion Programs
-    https://seip.usc.edu
-    USC Student Equity and Inclusion Programs (SEIP) is a cluster of student development centers and initiatives
-    within the Division of Student Affairs that offer student support services and programs that focus on
-    intersectionality, sense of belonging and well-being. Student Equity and Inclusion Programs consists of
-    Asian Pacific American Student Services, Center for Black Cultural and Student Affairs, Latinx/Chicanx
-    Center for Advocacy and Student Affairs, LGBT Resource Center, Trojan Food Pantry and the Veterans 
-    Page 8
-    Resource Center. SEIP facilitates dialogue, community-building and leads campus-wide equity and inclusion
-    initiatives that impact the student experience.
-    USC Emergency - UPC: (213) 740-4321, HSC: (323) 442-1000 – 24/7 on call
-    dps.usc.edu, emergency.usc.edu
-    Emergency assistance and avenue to report a crime. Latest updates regarding safety, including ways in
-    which instruction will be continued if an officially declared emergency makes travel to campus infeasible.
-    USC Department of Public Safety - UPC: (213) 740-6000, HSC: (323) 442-120 – 24/7 on call
-    dps.usc.edu
-    Non-emergency assistance or information.
             """
 
     response = chain.run(inp)
@@ -442,6 +354,6 @@ def test_syllabus_extraction():
 
     print()
     # print("Input:", inp)
-    print("Response:", [r.dict() for r in response])
+    print("Response:", response[0].json(indent=4))
     # logging.info("Input: %s", inp)
     # logging.info("Response: %s", [r.dict() for r in response])  # use .dict() to convert Pydantic models to dictionaries for logging

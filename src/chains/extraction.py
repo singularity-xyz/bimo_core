@@ -31,13 +31,22 @@ def _get_extraction_function(entity_schema: dict) -> dict:
     }
 
 
-_EXTRACTION_TEMPLATE = """Extract and save the relevant entities mentioned\
- in the following passage together with their properties.
+# _EXTRACTION_TEMPLATE = """Extract and save the relevant entities mentioned\
+#  in the following passage together with their properties.
 
-Passage:
+# Passage:
+# {input}
+# """
+
+_EXTRACTION_TEMPLATE = """Extract and save assignments and exams mentioned\
+ in the following university class syllabus together with their properties. An assignment\
+ is anything the student has to submit for a grade, such as a project, essay, or homework.\
+ An exam is a quiz, midterm, or final exam. For each assignment and exam, save the following\
+ properties: name, description, due date, and weightage.
+
+Syllabus:
 {input}
 """
-
 
 def create_extraction_chain(schema: dict, llm: BaseLanguageModel) -> Chain:
     """Creates a chain that extracts information from a passage.
